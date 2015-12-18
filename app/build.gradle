@@ -26,4 +26,5 @@ dependencies {
     compile ('com.h6ah4i.android.widget.advrecyclerview:advrecyclerview:0.8.5@aar'){
         transitive=true
     }
+    compile 'com.android.support:design:23.0.0'
 }

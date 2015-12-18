@@ -1,7 +1,10 @@
 package quokka.jellenberger.ogrocer;
 
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import android.util.Pair;
 
+import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
+
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -9,103 +12,208 @@ import java.util.List;
  * Created by jellenberger on 12/17/15.
  */
 
-public class ShoppingCartDataProvider extends AbstractDataProvider{
+public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
+    private List<Pair<GroupData, List<ChildData>>> mData;
 
-    private List<ConcreteData> mData;
-    private ConcreteData mLastRemovedData;
-    private int mLastRemovedPosition = -1;
-    final int swipeUD = RecyclerViewSwipeManager.REACTION_CAN_SWIPE_UP | RecyclerViewSwipeManager.REACTION_CAN_SWIPE_DOWN;
-    final int swipeLR = RecyclerViewSwipeManager.REACTION_CAN_SWIPE_LEFT | RecyclerViewSwipeManager.REACTION_CAN_SWIPE_RIGHT;
+    // for undo group item
+    private Pair<GroupData, List<ChildData>> mLastRemovedGroup;
+    private int mLastRemovedGroupPosition = -1;
+
+    // for undo child item
+    private ChildData mLastRemovedChild;
+    private long mLastRemovedChildParentGroupId = -1;
+    private int mLastRemovedChildPosition = -1;
 
     public ShoppingCartDataProvider() {
-        mData = new LinkedList<>();
-        mData.add(new ConcreteData(mData.size(), 0, "New Item", swipeLR));
-        mData.add(new ConcreteData(mData.size(), 0, "New Item2", swipeLR));
-        mData.add(new ConcreteData(mData.size(), 0, "New Item3", swipeLR));
+        final String groupItems = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String childItems = "abc";
 
+        mData = new LinkedList<>();
+
+        for (int i = 0; i < groupItems.length(); i++) {
+            //noinspection UnnecessaryLocalVariable
+            final long groupId = i;
+            final String groupText = Character.toString(groupItems.charAt(i));
+            final ConcreteGroupData group = new ConcreteGroupData(groupId, groupText);
+            final List<ChildData> children = new ArrayList<>();
+
+            for (int j = 0; j < childItems.length(); j++) {
+                final long childId = group.generateNewChildId();
+                final String childText = Character.toString(childItems.charAt(j));
+
+                children.add(new ConcreteChildData(childId, childText));
+            }
+
+            mData.add(new Pair<GroupData, List<ChildData>>(group, children));
+        }
     }
 
-
-
     @Override
-    public int getCount() {
+    public int getGroupCount() {
         return mData.size();
     }
 
     @Override
-    public Data getItem(int index) {
-        if (index < 0 || index >= getCount()) {
-            throw new IndexOutOfBoundsException("index = " + index);
-        }
-
-        return mData.get(index);
+    public int getChildCount(int groupPosition) {
+        return mData.get(groupPosition).second.size();
     }
 
     @Override
-    public int undoLastRemoval() {
-        if (mLastRemovedData != null) {
-            int insertedPosition;
-            if (mLastRemovedPosition >= 0 && mLastRemovedPosition < mData.size()) {
-                insertedPosition = mLastRemovedPosition;
-            } else {
-                insertedPosition = mData.size();
-            }
-
-            mData.add(insertedPosition, mLastRemovedData);
-
-            mLastRemovedData = null;
-            mLastRemovedPosition = -1;
-
-            return insertedPosition;
-        } else {
-            return -1;
+    public GroupData getGroupItem(int groupPosition) {
+        if (groupPosition < 0 || groupPosition >= getGroupCount()) {
+            throw new IndexOutOfBoundsException("groupPosition = " + groupPosition);
         }
+
+        return mData.get(groupPosition).first;
     }
 
     @Override
-    public void moveItem(int fromPosition, int toPosition) {
-        if (fromPosition == toPosition) {
+    public ChildData getChildItem(int groupPosition, int childPosition) {
+        if (groupPosition < 0 || groupPosition >= getGroupCount()) {
+            throw new IndexOutOfBoundsException("groupPosition = " + groupPosition);
+        }
+
+        final List<ChildData> children = mData.get(groupPosition).second;
+
+        if (childPosition < 0 || childPosition >= children.size()) {
+            throw new IndexOutOfBoundsException("childPosition = " + childPosition);
+        }
+
+        return children.get(childPosition);
+    }
+
+    @Override
+    public void moveGroupItem(int fromGroupPosition, int toGroupPosition) {
+        if (fromGroupPosition == toGroupPosition) {
             return;
         }
 
-        final ConcreteData item = mData.remove(fromPosition);
-
-        mData.add(toPosition, item);
-        mLastRemovedPosition = -1;
+        final Pair<GroupData, List<ChildData>> item = mData.remove(fromGroupPosition);
+        mData.add(toGroupPosition, item);
     }
 
     @Override
-    public void removeItem(int position) {
-        final ConcreteData removedItem = mData.remove(position);
+    public void moveChildItem(int fromGroupPosition, int fromChildPosition, int toGroupPosition, int toChildPosition) {
+        if ((fromGroupPosition == toGroupPosition) && (fromChildPosition == toChildPosition)) {
+            return;
+        }
 
-        mLastRemovedData = removedItem;
-        mLastRemovedPosition = position;
+        final Pair<GroupData, List<ChildData>> fromGroup = mData.get(fromGroupPosition);
+        final Pair<GroupData, List<ChildData>> toGroup = mData.get(toGroupPosition);
+
+        final ConcreteChildData item = (ConcreteChildData) fromGroup.second.remove(fromChildPosition);
+
+        if (toGroupPosition != fromGroupPosition) {
+            // assign a new ID
+            final long newId = ((ConcreteGroupData) toGroup.first).generateNewChildId();
+            item.setChildId(newId);
+        }
+
+        toGroup.second.add(toChildPosition, item);
     }
 
-    public static final class ConcreteData extends Data {
+    @Override
+    public void removeGroupItem(int groupPosition) {
+        mLastRemovedGroup = mData.remove(groupPosition);
+        mLastRemovedGroupPosition = groupPosition;
+
+        mLastRemovedChild = null;
+        mLastRemovedChildParentGroupId = -1;
+        mLastRemovedChildPosition = -1;
+    }
+
+    @Override
+    public void removeChildItem(int groupPosition, int childPosition) {
+        mLastRemovedChild = mData.get(groupPosition).second.remove(childPosition);
+        mLastRemovedChildParentGroupId = mData.get(groupPosition).first.getGroupId();
+        mLastRemovedChildPosition = childPosition;
+
+        mLastRemovedGroup = null;
+        mLastRemovedGroupPosition = -1;
+    }
+
+
+    @Override
+    public long undoLastRemoval() {
+        if (mLastRemovedGroup != null) {
+            return undoGroupRemoval();
+        } else if (mLastRemovedChild != null) {
+            return undoChildRemoval();
+        } else {
+            return RecyclerViewExpandableItemManager.NO_EXPANDABLE_POSITION;
+        }
+    }
+
+    private long undoGroupRemoval() {
+        int insertedPosition;
+        if (mLastRemovedGroupPosition >= 0 && mLastRemovedGroupPosition < mData.size()) {
+            insertedPosition = mLastRemovedGroupPosition;
+        } else {
+            insertedPosition = mData.size();
+        }
+
+        mData.add(insertedPosition, mLastRemovedGroup);
+
+        mLastRemovedGroup = null;
+        mLastRemovedGroupPosition = -1;
+
+        return RecyclerViewExpandableItemManager.getPackedPositionForGroup(insertedPosition);
+    }
+
+    private long undoChildRemoval() {
+        Pair<GroupData, List<ChildData>> group = null;
+        int groupPosition = -1;
+
+        // find the group
+        for (int i = 0; i < mData.size(); i++) {
+            if (mData.get(i).first.getGroupId() == mLastRemovedChildParentGroupId) {
+                group = mData.get(i);
+                groupPosition = i;
+                break;
+            }
+        }
+
+        if (group == null) {
+            return RecyclerViewExpandableItemManager.NO_EXPANDABLE_POSITION;
+        }
+
+        int insertedPosition;
+        if (mLastRemovedChildPosition >= 0 && mLastRemovedChildPosition < group.second.size()) {
+            insertedPosition = mLastRemovedChildPosition;
+        } else {
+            insertedPosition = group.second.size();
+        }
+
+        group.second.add(insertedPosition, mLastRemovedChild);
+
+        mLastRemovedChildParentGroupId = -1;
+        mLastRemovedChildPosition = -1;
+        mLastRemovedChild = null;
+
+        return RecyclerViewExpandableItemManager.getPackedPositionForChild(groupPosition, insertedPosition);
+    }
+
+    public static final class ConcreteGroupData extends GroupData {
 
         private final long mId;
         private final String mText;
-        private final int mViewType;
         private boolean mPinned;
+        private long mNextChildId;
 
-        ConcreteData(long id, int viewType, String text, int swipeReaction) {
+        ConcreteGroupData(long id, String text) {
             mId = id;
-            mViewType = viewType;
             mText = text;
+            mNextChildId = 0;
         }
 
         @Override
-        public int getViewType() {
-            return mViewType;
+        public long getGroupId() {
+            return mId;
         }
 
         @Override
-        public long getId() { return mId; }
-
-        @Override
-        public String toString() {
-            return mText;
+        public boolean isSectionHeader() {
+            return false;
         }
 
         @Override
@@ -114,14 +222,55 @@ public class ShoppingCartDataProvider extends AbstractDataProvider{
         }
 
         @Override
+        public void setPinned(boolean pinnedToSwipeLeft) {
+            mPinned = pinnedToSwipeLeft;
+        }
+
+        @Override
         public boolean isPinned() {
             return mPinned;
+        }
+
+        public long generateNewChildId() {
+            final long id = mNextChildId;
+            mNextChildId += 1;
+            return id;
+        }
+    }
+
+    public static final class ConcreteChildData extends AbstractExpandableDataProvider.ChildData {
+
+        private long mId;
+        private final String mText;
+        private boolean mPinned;
+
+        ConcreteChildData(long id, String text) {
+            mId = id;
+            mText = text;
+        }
+
+        @Override
+        public long getChildId() {
+            return mId;
+        }
+
+        @Override
+        public String getText() {
+            return mText;
         }
 
         @Override
         public void setPinned(boolean pinned) {
             mPinned = pinned;
         }
+
+        @Override
+        public boolean isPinned() {
+            return mPinned;
+        }
+
+        public void setChildId(long id) {
+            this.mId = id;
+        }
     }
 }
-

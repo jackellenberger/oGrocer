@@ -1,6 +1,10 @@
 package quokka.jellenberger.ogrocer;
 
 import android.os.Bundle;
+import android.support.design.widget.Snackbar;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -10,11 +14,19 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
+
 /**
  * Created by jellenberger on 12/15/15.
  */
 public class ShoppingCartView extends AppCompatActivity
 {
+
+    private static final String FRAGMENT_TAG_DATA_PROVIDER = "data provider";
+    private static final String FRAGMENT_LIST_VIEW = "list view";
+    private static final String FRAGMENT_TAG_ITEM_PINNED_DIALOG = "item pinned dialog";
+
+
     //APP BAR
     private Toolbar _toolbar;
 
@@ -24,6 +36,8 @@ public class ShoppingCartView extends AppCompatActivity
     SlidingTabLayout _tabs;
     CharSequence _titles[] = {"Cart", "Saved"};
     int _numtabs = _titles.length;
+
+    AbstractExpandableDataProvider _dataProviders[] = {null,null};
 
     //DRAWER
     DrawerLayout _DrawerLayout;
@@ -98,6 +112,143 @@ public class ShoppingCartView extends AppCompatActivity
         });
         //<< NAVIGATION DRAWER
 
+    }
+    public int getCurrentTab()
+    {
+        return _pager.getCurrentItem();
+    }
+
+    public void onGroupItemRemoved(int groupPosition) {
+        Snackbar snackbar = Snackbar.make(
+                findViewById(R.id.container),
+                R.string.snack_bar_text_group_item_removed,
+                Snackbar.LENGTH_LONG);
+
+        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemUndoActionClicked();
+            }
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
+        snackbar.show();
+    }
+
+    /**
+     * This method will be called when a child item is removed
+     *
+     * @param groupPosition The group position of the child item within data set
+     * @param childPosition The position of the child item within the group
+     */
+    public void onChildItemRemoved(int groupPosition, int childPosition) {
+        Snackbar snackbar = Snackbar.make(
+                findViewById(R.id.container),
+                R.string.snack_bar_text_child_item_removed,
+                Snackbar.LENGTH_LONG);
+
+        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemUndoActionClicked();
+            }
+        });
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
+        snackbar.show();
+    }
+
+    /**
+     * This method will be called when a group item is pinned
+     *
+     * @param groupPosition The position of the group item within data set
+     */
+    public void onGroupItemPinned(int groupPosition) {
+        final DialogFragment dialog = ExpandableItemPinnedMessageDialogFragment.newInstance(groupPosition, RecyclerView.NO_POSITION);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(dialog, FRAGMENT_TAG_ITEM_PINNED_DIALOG)
+                .commit();
+    }
+
+    /**
+     * This method will be called when a child item is pinned
+     *
+     * @param groupPosition The group position of the child item within data set
+     * @param childPosition The position of the child item within the group
+     */
+    public void onChildItemPinned(int groupPosition, int childPosition) {
+        final DialogFragment dialog = ExpandableItemPinnedMessageDialogFragment.newInstance(groupPosition, childPosition);
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(dialog, FRAGMENT_TAG_ITEM_PINNED_DIALOG)
+                .commit();
+    }
+
+    public void onGroupItemClicked(int groupPosition) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        AbstractExpandableDataProvider.GroupData data = getDataProvider().getGroupItem(groupPosition);
+
+        if (data.isPinned()) {
+            // unpin if tapped the pinned item
+            data.setPinned(false);
+            ((ShoppingCartTabContent) fragment).notifyGroupItemChanged(groupPosition);
+        }
+    }
+
+    public void onChildItemClicked(int groupPosition, int childPosition) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        AbstractExpandableDataProvider.ChildData data = getDataProvider().getChildItem(groupPosition, childPosition);
+
+        if (data.isPinned()) {
+            // unpin if tapped the pinned item
+            data.setPinned(false);
+            ((ShoppingCartTabContent) fragment).notifyChildItemChanged(groupPosition, childPosition);
+        }
+    }
+
+    private void onItemUndoActionClicked() {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+        final long result = getDataProvider().undoLastRemoval();
+
+        if (result == RecyclerViewExpandableItemManager.NO_EXPANDABLE_POSITION) {
+            return;
+        }
+
+        final int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(result);
+        final int childPosition = RecyclerViewExpandableItemManager.getPackedPositionChild(result);
+
+        if (childPosition == RecyclerView.NO_POSITION) {
+            // group item
+            ((ShoppingCartTabContent) fragment).notifyGroupItemRestored(groupPosition);
+        } else {
+            // child item
+            ((ShoppingCartTabContent) fragment).notifyChildItemRestored(groupPosition, childPosition);
+        }
+    }
+
+    // implements ExpandableItemPinnedMessageDialogFragment.EventListener
+    public void onNotifyExpandableItemPinnedDialogDismissed(int groupPosition, int childPosition, boolean ok) {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
+
+        if (childPosition == RecyclerView.NO_POSITION) {
+            // group item
+            getDataProvider().getGroupItem(groupPosition).setPinned(ok);
+            ((ShoppingCartTabContent) fragment).notifyGroupItemChanged(groupPosition);
+        } else {
+            // child item
+            getDataProvider().getChildItem(groupPosition, childPosition).setPinned(ok);
+            ((ShoppingCartTabContent) fragment).notifyChildItemChanged(groupPosition, childPosition);
+        }
+    }
+
+    public AbstractExpandableDataProvider getDataProvider() {
+        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
+        return ((ShoppingCartTabContent) fragment).getDataProvider();
+    }
+
+    public void registerDataProvider(int index, AbstractExpandableDataProvider dp){
+        _dataProviders[index] = dp;
     }
 
 }

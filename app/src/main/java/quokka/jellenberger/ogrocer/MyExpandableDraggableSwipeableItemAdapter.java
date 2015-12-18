@@ -25,11 +25,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.h6ah4i.android.example.advrecyclerview.R;
-import com.h6ah4i.android.example.advrecyclerview.common.data.AbstractExpandableDataProvider;
-import com.h6ah4i.android.example.advrecyclerview.common.utils.DrawableUtils;
-import com.h6ah4i.android.example.advrecyclerview.common.utils.ViewUtils;
-import com.h6ah4i.android.example.advrecyclerview.common.widget.ExpandableItemIndicator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.ExpandableDraggableItemAdapter;
@@ -110,11 +105,11 @@ class MyExpandableDraggableSwipeableItemAdapter
     }
 
     public static class MyGroupViewHolder extends MyBaseViewHolder {
-        public ExpandableItemIndicator mIndicator;
+        //public ExpandableItemIndicator mIndicator;
 
         public MyGroupViewHolder(View v) {
             super(v);
-            mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
+            //mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
         }
     }
 
@@ -192,14 +187,14 @@ class MyExpandableDraggableSwipeableItemAdapter
     @Override
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.list_group_item_draggable, parent, false);
+        final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
         return new MyGroupViewHolder(v);
     }
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.list_item_draggable, parent, false);
+        final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
         return new MyChildViewHolder(v);
     }
 
@@ -212,7 +207,8 @@ class MyExpandableDraggableSwipeableItemAdapter
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
 
         // set text
-        holder.mTextView.setText(item.getText());
+        Log.d("NULL POINTER EXCEPTION:",item.getText()); //TODO
+        holder.mTextView.setText((item.getText() == null) ? "null" : item.getText());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -224,7 +220,7 @@ class MyExpandableDraggableSwipeableItemAdapter
                 ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
             boolean isExpanded;
-            boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
+            //boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
 
             if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0) {
                 bgResId = R.drawable.bg_group_item_dragging_active_state;
@@ -250,7 +246,7 @@ class MyExpandableDraggableSwipeableItemAdapter
             }
 
             holder.mContainer.setBackgroundResource(bgResId);
-            holder.mIndicator.setExpandedState(isExpanded, animateIndicator);
+            //holder.mIndicator.setExpandedState(isExpanded, animateIndicator);
         }
 
         // set swiping properties
