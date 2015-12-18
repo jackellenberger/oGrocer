@@ -23,6 +23,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
@@ -85,7 +86,7 @@ class MyExpandableDraggableSwipeableItemAdapter
             super(v);
             mContainer = (FrameLayout) v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
-            mTextView = (TextView) v.findViewById(android.R.id.text1);
+            mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
         }
 
         @Override
@@ -188,6 +189,7 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
+        setBulletIcon(parent, v);
         return new MyGroupViewHolder(v);
     }
 
@@ -195,9 +197,15 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
+        setBulletIcon(parent, v);
         return new MyChildViewHolder(v);
     }
 
+    public void setBulletIcon(ViewGroup parent, View v){
+        ImageView bullet = (ImageView) v.findViewById(R.id.bullet_icon);
+        if ( ((ShoppingCartView) parent.getContext()).getCurrentTab() == 1 )
+            bullet.setImageResource(R.drawable.ic_action_add);
+    }
     @Override
     public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
         // group item
@@ -207,8 +215,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
 
         // set text
-        Log.d("NULL POINTER EXCEPTION:",item.getText()); //TODO
-        holder.mTextView.setText((item.getText() == null) ? "null" : item.getText());
+        holder.mTextView.setText(item.getText());
 
         // set background resource (target view ID: container)
         final int dragState = holder.getDragStateFlags();
@@ -692,7 +699,6 @@ class MyExpandableDraggableSwipeableItemAdapter
         @Override
         protected void onCleanUp() {
             super.onCleanUp();
-            // clear the references
             mAdapter = null;
         }
     }

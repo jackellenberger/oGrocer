@@ -10,6 +10,7 @@
     <color name="accentColorReallyLight">#E1BEE7</color>
     <color name="accentColorDark">#7B1FA2</color>
 
+    <color name="grey5">#1b1b1b1b</color>
     <color name="grey4">#10ffffff</color>
     <color name="grey3">#1Fffffff</color>
     <color name="grey2">#61ffffff</color>

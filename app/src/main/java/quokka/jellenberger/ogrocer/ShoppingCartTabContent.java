@@ -1,6 +1,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -39,7 +40,7 @@ public class ShoppingCartTabContent extends Fragment
     public int _currentTab;
     public static int _tabID;
     Context _activityContext;
-    int bulletIcon;
+    Drawable bulletIcon;
 
     private RecyclerView mRecyclerView;
     private RecyclerView.LayoutManager mLayoutManager;
@@ -93,16 +94,6 @@ public class ShoppingCartTabContent extends Fragment
         final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
 
         _tabID = getTabID();
-        switch (_tabID){
-            case 0:
-                _currentTab = 0;
-                bulletIcon = R.mipmap.ic_launcher;//checkbox
-                break;
-            case 1:
-                _currentTab = 1;
-                bulletIcon = R.mipmap.ic_launcher;//plus sign
-                break;
-        }
         return contentView;
     }
     @Override
@@ -326,7 +317,13 @@ public class ShoppingCartTabContent extends Fragment
 
         mAdapter.notifyItemChanged(flatPosition);
     }
+    /*
     public AbstractExpandableDataProvider getDataProvider() {
         return _dataProvider;
+    }
+    */
+    public AbstractExpandableDataProvider getDataProvider() {
+        final Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
+        return ((ShoppingCartTabContent) fragment).getDataProvider();
     }
 }
