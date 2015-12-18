@@ -9,15 +9,14 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
-import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.ItemDraggableRange;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableItemViewHolder;
 
-class MyDraggableItemAdapter extends RecyclerView.Adapter<MyDraggableItemAdapter.MyViewHolder>
-                             implements DraggableItemAdapter<MyDraggableItemAdapter.MyViewHolder>
+class DraggableItemAdapter extends RecyclerView.Adapter<DraggableItemAdapter.MyViewHolder>
+                             implements com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemAdapter
 {
-    private static final String TAG = "MyDraggableItemAdapter";
+    private static final String TAG = "DraggableItemAdapter";
 
     // NOTE: Make accessible with short name
     private interface Draggable extends DraggableItemConstants { }
@@ -33,11 +32,11 @@ class MyDraggableItemAdapter extends RecyclerView.Adapter<MyDraggableItemAdapter
             super(v);
             mContainer = (FrameLayout) v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
-            mTextView = (TextView) v.findViewById(android.R.id.text1);
+            mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
         }
     }
 
-    public MyDraggableItemAdapter(AbstractDataProvider dataProvider) {
+    public DraggableItemAdapter(AbstractDataProvider dataProvider) {
         mProvider = dataProvider;
 
         // DraggableItemAdapter requires stable ID, and also
@@ -65,7 +64,6 @@ class MyDraggableItemAdapter extends RecyclerView.Adapter<MyDraggableItemAdapter
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         final AbstractDataProvider.Data item = mProvider.getItem(position);
-
         // set text
         holder.mTextView.setText(item.getText());
 
@@ -96,6 +94,23 @@ class MyDraggableItemAdapter extends RecyclerView.Adapter<MyDraggableItemAdapter
     }
 
     @Override
+    public boolean onCheckCanStartDrag(RecyclerView.ViewHolder holder, int position, int x, int y) {
+        // x, y --- relative from the itemView's top-left
+        MyViewHolder myHolder = (MyViewHolder) holder;
+        final View containerView = myHolder.mContainer;
+        final View dragHandleView = myHolder.mDragHandle;
+
+        final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
+        final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
+
+        return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);    }
+
+    @Override
+    public ItemDraggableRange onGetItemDraggableRange(RecyclerView.ViewHolder holder, int position) {
+        return null;
+    }
+
+    @Override
     public void onMoveItem(int fromPosition, int toPosition) {
         Log.d(TAG, "onMoveItem(fromPosition = " + fromPosition + ", toPosition = " + toPosition + ")");
 
@@ -106,23 +121,5 @@ class MyDraggableItemAdapter extends RecyclerView.Adapter<MyDraggableItemAdapter
         mProvider.moveItem(fromPosition, toPosition);
 
         notifyItemMoved(fromPosition, toPosition);
-    }
-
-    @Override
-    public boolean onCheckCanStartDrag(MyViewHolder holder, int position, int x, int y) {
-        // x, y --- relative from the itemView's top-left
-        final View containerView = holder.mContainer;
-        final View dragHandleView = holder.mDragHandle;
-
-        final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
-        final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
-
-        return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
-    }
-
-    @Override
-    public ItemDraggableRange onGetItemDraggableRange(MyViewHolder holder, int position) {
-        // no drag-sortable range specified
-        return null;
     }
 }

@@ -43,8 +43,8 @@ public class ShoppingCartView extends AppCompatActivity
         //>> APPBAR
         _toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(_toolbar);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true); //replaces hamburger with back
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+        if (getSupportActionBar() != null)
+            getSupportActionBar().setDisplayShowHomeEnabled(true);
         //<< APPBAR
 
         //>> TABS

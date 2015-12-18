@@ -19,7 +19,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="@dimen/list_item_height"
+    android:layout_height="@dimen/cart_recycler_item_height"
     android:background="@drawable/bg_swipe_item_neutral">
 
     <FrameLayout
@@ -27,24 +27,35 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:clickable="true"
-        android:foreground="?attr/selectableItemBackground">
+        android:background="#ffffff"
+        android:foreground="?attr/selectableItemBackground"
+        android:elevation="1dp"
+        >
 
-        <View
+        <ImageView
             android:id="@+id/drag_handle"
             android:layout_width="32dp"
             android:layout_height="match_parent"
             android:layout_gravity="top|left"
-            android:background="#20000000"/>
+            android:background="#20000000"
+            android:src="@mipmap/ic_launcher"/>
 
         <TextView
-            android:id="@android:id/text1"
+            android:id="@+id/recycler_item_text"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="top|left"
             android:layout_marginLeft="32dp"
             android:layout_marginRight="32dp"
-            android:gravity="center"
+            android:gravity="center_vertical"
+            android:textAppearance="@style/TextHeaderSub"
             tools:ignore="RtlHardcoded"/>
+        <ImageView
+            android:id="@+id/cart_recycler_delete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="end"
+            android:src="@mipmap/ic_launcher"/>
 
     </FrameLayout>
 

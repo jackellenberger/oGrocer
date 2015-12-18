@@ -21,9 +21,8 @@ package quokka.jellenberger.ogrocer;
 public abstract class AbstractDataProvider {
 
     public static abstract class Data {
-        public abstract long getId();
 
-        public abstract boolean isSectionHeader();
+        public abstract long getId();
 
         public abstract int getViewType();
 

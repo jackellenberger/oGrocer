@@ -1,16 +1,20 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.animator.RefactoredDefaultItemAnimator;
+import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 
 /**
@@ -30,6 +34,8 @@ public class ShoppingCartTabContent extends Fragment {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.Adapter mWrappedAdapter;
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
+
+    AbstractDataProvider _dataProvider;
 
     public static ShoppingCartTabContent newInstance(int position) {
         ShoppingCartTabContent f = new ShoppingCartTabContent();
@@ -70,17 +76,14 @@ public class ShoppingCartTabContent extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
-        TextView text = (TextView) contentView.findViewById(R.id.text_content);
 
         _tabID = getTabID();
         switch (_tabID){
             case 0:
-                text.setText("cart");
                 bulletIcon = R.mipmap.ic_launcher;//checkbox
                 break;
             case 1:
                 bulletIcon = R.mipmap.ic_launcher;//plus sign
-                text.setText("saved");
                 break;
         }
         return contentView;
@@ -96,12 +99,28 @@ public class ShoppingCartTabContent extends Fragment {
         //mRecyclerViewDragDropManager.setDraggingItemShadowDrawable((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.shadow)); //might be broken
 
         //adapter
-        final MyDraggableItemAdapter myItemAdapter = new MyDraggableItemAdapter(getDataProvider());
+        _dataProvider = new ShoppingCartDataProvider();
+        final DraggableItemAdapter myItemAdapter = new DraggableItemAdapter(_dataProvider);
         mAdapter = myItemAdapter;
+        mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(myItemAdapter);
+        final GeneralItemAnimator animator = new RefactoredDefaultItemAnimator();
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        mRecyclerView.setAdapter(mWrappedAdapter);
+        mRecyclerView.setItemAnimator(animator);
+
+        // additional decorations
+        //noinspection StatementWithEmptyBody
+        if (supportsViewElevation()) {
+            // Lollipop or later has native drop shadow feature. ItemShadowDecorator is not required.
+        } else {
+            //TODO mRecyclerView.addItemDecoration(new ItemShadowDecorator((NinePatchDrawable) ContextCompat.getDrawable(getContext(), R.drawable.material_shadow_z1)));
+        }
+        mRecyclerView.addItemDecoration(new SimpleListDividerDecorator(ContextCompat.getDrawable(getContext(), R.drawable.list_divider_h), true));
+
+        mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
     }
 
-    public AbstractDataProvider getDataProvider() {
-        final Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
-        return ((ShoppingCartTabContent) fragment).getDataProvider();
+    private boolean supportsViewElevation() {
+        return (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP);
     }
 }

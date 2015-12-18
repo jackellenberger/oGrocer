@@ -234,4 +234,6 @@
     <dimen name="list_group_item_height">96dp</dimen>
     <dimen name="list_group_item_with_add_remove_buttons_height">108dp</dimen>
 
+    <dimen name="cart_recycler_item_height">48dp</dimen>
+
 </resources>

@@ -27,12 +27,7 @@ public class AdapterSlidingTab extends FragmentStatePagerAdapter {
     public Fragment getItem(int position) {     Log.d("getItem",String.valueOf(position));
         ShoppingCartTabContent tabContent = new ShoppingCartTabContent();
         tabContent = ShoppingCartTabContent.newInstance(position);
-        _fm.beginTransaction()
-                .add(tabContent, FRAGMENT_TAG_DATA_PROVIDER)
-                .commit();
-        _fm.beginTransaction()
-                .add(R.id.container, new Fragment(), FRAGMENT_LIST_VIEW)
-                .commit();
+
         return tabContent;
     }
 
