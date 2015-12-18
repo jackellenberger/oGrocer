@@ -31,14 +31,14 @@
     <color name="bg_item_swiping_state">#ffddddff</color>
     <color name="bg_item_swiping_active_state">#ff9999ff</color>
 
-    <color name="bg_group_item_normal_state">#ffddffdd</color>
-    <color name="bg_group_item_normal_pressed_state">#ff99cc99</color>
-    <color name="bg_group_item_expanded_state">#ff88dd88</color>
-    <color name="bg_group_item_expanded_pressed_state">#ff99cc99</color>
-    <color name="bg_group_item_dragging_state">#ffeeccff</color>
-    <color name="bg_group_item_dragging_active_state">#ffee99ff</color>
-    <color name="bg_group_item_swiping_state">#ffddccff</color>
-    <color name="bg_group_item_swiping_active_state">#ffbb99ff</color>
+    <color name="bg_group_item_normal_state">#ffffffff</color>
+    <color name="bg_group_item_normal_pressed_state">#10ffffff</color>
+    <color name="bg_group_item_expanded_state">#ffffffff</color>
+    <color name="bg_group_item_expanded_pressed_state">#10ffffff</color>
+    <color name="bg_group_item_dragging_state">#DEffffff</color>
+    <color name="bg_group_item_dragging_active_state">#10ffffff</color>
+    <color name="bg_group_item_swiping_state">#8Affffff</color>
+    <color name="bg_group_item_swiping_active_state">#8Affffff</color>
 
     <color name="bg_swipe_item_neutral">#ffffffff</color>
     <color name="bg_swipe_item_pinned">#fff9930d</color>
