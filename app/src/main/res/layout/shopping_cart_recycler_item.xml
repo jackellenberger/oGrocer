@@ -25,7 +25,7 @@
     <FrameLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="fill_parent"
         android:clickable="true"
         android:background="#ffffff"
         android:foreground="?attr/selectableItemBackground"
@@ -37,26 +37,25 @@
             <ImageView
                 android:id="@+id/drag_handle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_gravity="start"
                 android:background="@color/grey5"
                 android:src="@drawable/ic_more_vert"
                 android:padding="@dimen/spacing_micro"
                 />
-            <ImageView
+            <CheckBox
                 android:id="@+id/bullet_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:padding="@dimen/spacing_micro"
-                android:src="@drawable/ic_check_box_outline_blank"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/spacing_micro"
+                android:buttonTint="@color/accentColor"
+                android:theme="@style/AppTheme.Light"
                 />
             <TextView
                 android:id="@+id/recycler_item_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:layout_marginLeft="@dimen/spacing_normal"
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextHeaderSub"

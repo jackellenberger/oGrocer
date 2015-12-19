@@ -9,6 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="start"
-        android:layout_margin="@dimen/data_item_padding"
+        android:layout_marginStart="@dimen/data_item_padding"
         />
 </LinearLayout>

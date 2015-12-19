@@ -57,14 +57,11 @@ class MyExpandableDraggableSwipeableItemAdapter
     }
 
     // NOTE: Make accessible with short name
-    private interface Expandable extends ExpandableItemConstants {
-    }
+    private interface Expandable extends ExpandableItemConstants {}
 
-    private interface Draggable extends DraggableItemConstants {
-    }
+    private interface Draggable extends DraggableItemConstants {}
 
-    private interface Swipeable extends SwipeableItemConstants {
-    }
+    private interface Swipeable extends SwipeableItemConstants {}
 
     private final RecyclerViewExpandableItemManager mExpandableItemManager;
     private AbstractExpandableDataProvider mProvider;

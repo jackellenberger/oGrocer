@@ -5,6 +5,9 @@
         <!-- Customize your theme here. -->
         <item name="windowActionBar">false</item>
     </style>
+    <style name="AppTheme.Light" parent="Theme.AppCompat.Light">
+
+    </style>
 
     <style name="DrawerItemText">
         <item name="android:layout_width">fill_parent</item>
@@ -55,4 +58,5 @@
     <style name="TextAppearance.Subhead" parent="TextAppearance.Body2">
         <item name="android:textColor">@color/primaryText</item>
     </style>
+
 </resources>

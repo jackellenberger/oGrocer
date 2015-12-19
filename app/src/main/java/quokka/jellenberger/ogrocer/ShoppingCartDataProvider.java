@@ -25,7 +25,7 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     private int mLastRemovedChildPosition = -1;
 
     public ShoppingCartDataProvider() {
-        final String groupItems = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        final String groupItems = "ABCD";
         final String childItems = "abc";
 
         mData = new LinkedList<>();
