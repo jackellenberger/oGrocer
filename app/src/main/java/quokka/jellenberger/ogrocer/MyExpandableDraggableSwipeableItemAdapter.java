@@ -16,6 +16,7 @@
 
 package quokka.jellenberger.ogrocer;
 
+import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -23,7 +24,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
@@ -47,6 +47,14 @@ class MyExpandableDraggableSwipeableItemAdapter
         implements ExpandableDraggableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder>,
         ExpandableSwipeableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder> {
     private static final String TAG = "MyEDSItemAdapter";
+
+    private static final int[] EMPTY_STATE = new int[] {};
+
+    public static void clearState(Drawable drawable) {
+        if (drawable != null) {
+            drawable.setState(EMPTY_STATE);
+        }
+    }
 
     // NOTE: Make accessible with short name
     private interface Expandable extends ExpandableItemConstants {
@@ -188,24 +196,25 @@ class MyExpandableDraggableSwipeableItemAdapter
     @Override
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
-        setBulletIcon(parent, v);
+        final View v;
+        if (parent.findViewById(R.id.shopping_cart_recycler) != null)
+            v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
+        else
+            v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
         return new MyGroupViewHolder(v);
     }
 
     @Override
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        final View v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
-        setBulletIcon(parent, v);
+        final View v;
+        if (parent.findViewById(R.id.shopping_cart_recycler) != null)
+            v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
+        else
+            v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
         return new MyChildViewHolder(v);
     }
 
-    public void setBulletIcon(ViewGroup parent, View v){
-        ImageView bullet = (ImageView) v.findViewById(R.id.bullet_icon);
-        if ( ((ShoppingCartView) parent.getContext()).getCurrentTab() == 1 )
-            bullet.setImageResource(R.drawable.ic_action_add);
-    }
     @Override
     public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
         // group item
@@ -233,7 +242,7 @@ class MyExpandableDraggableSwipeableItemAdapter
                 bgResId = R.drawable.bg_group_item_dragging_active_state;
 
                 // need to clear drawable state here to get correct appearance of the dragging item.
-                DrawableUtils.clearState(holder.mContainer.getForeground());
+                clearState(holder.mContainer.getForeground());
             } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
                 bgResId = R.drawable.bg_group_item_dragging_state;
             } else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {
@@ -286,7 +295,7 @@ class MyExpandableDraggableSwipeableItemAdapter
                 bgResId = R.drawable.bg_item_dragging_active_state;
 
                 // need to clear drawable state here to get correct appearance of the dragging item.
-                DrawableUtils.clearState(holder.mContainer.getForeground());
+                clearState(holder.mContainer.getForeground());
             } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
                 bgResId = R.drawable.bg_item_dragging_state;
             } else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {

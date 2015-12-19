@@ -28,7 +28,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 /**
  * Created by jellenberger on 12/15/15.
  */
-public class ShoppingCartTabContent extends Fragment
+public class SavedCartTabContent extends Fragment
         implements RecyclerViewExpandableItemManager.OnGroupCollapseListener,
         RecyclerViewExpandableItemManager.OnGroupExpandListener {
 
@@ -53,8 +53,8 @@ public class ShoppingCartTabContent extends Fragment
 
     public AbstractExpandableDataProvider _dataProvider;
 
-    public static ShoppingCartTabContent newInstance(int position) {
-        ShoppingCartTabContent f = new ShoppingCartTabContent();
+    public static SavedCartTabContent newInstance(int position) {
+        SavedCartTabContent f = new SavedCartTabContent();
 
         Bundle args = new Bundle();
         args.putInt("tabID", position);
@@ -81,8 +81,7 @@ public class ShoppingCartTabContent extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
-        final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
-
+        final View contentView = inflater.inflate(R.layout.saved_cart_frag_layout, container, false);
         _tabID = getTabID();
         return contentView;
     }
@@ -95,7 +94,7 @@ public class ShoppingCartTabContent extends Fragment
         parent.registerDataProvider(_currentTab, _dataProvider);
 
         //noinspection ConstantConditions
-        mRecyclerView = (RecyclerView) getView().findViewById(R.id.shopping_cart_recycler);
+        mRecyclerView = (RecyclerView) getView().findViewById(R.id.saved_cart_recycler);
         mLayoutManager = new LinearLayoutManager(getContext());
 
         final Parcelable eimSavedState = (savedInstanceState != null) ? savedInstanceState.getParcelable(SAVED_STATE_EXPANDABLE_ITEM_MANAGER) : null;
@@ -311,6 +310,6 @@ public class ShoppingCartTabContent extends Fragment
 
     public AbstractExpandableDataProvider getDataProvider() {
         final Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
-        return ((ShoppingCartTabContent) fragment).getDataProvider();
+        return ((SavedCartTabContent) fragment).getDataProvider();
     }
 }

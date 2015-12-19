@@ -3,7 +3,6 @@ package quokka.jellenberger.ogrocer;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
-import android.util.Log;
 
 public class AdapterSlidingTab extends FragmentStatePagerAdapter {
 
@@ -24,9 +23,16 @@ public class AdapterSlidingTab extends FragmentStatePagerAdapter {
 
     //This method return the fragment for the every position in the View Pager
     @Override
-    public Fragment getItem(int position) {     Log.d("getItem",String.valueOf(position));
-        ShoppingCartTabContent tabContent = new ShoppingCartTabContent();
-        tabContent = ShoppingCartTabContent.newInstance(position);
+    public Fragment getItem(int position) {
+        Fragment tabContent;
+        if (position == 0) {
+            tabContent = new ShoppingCartTabContent();
+            tabContent = ShoppingCartTabContent.newInstance(position);
+        }
+        else {
+            tabContent = new SavedCartTabContent();
+            tabContent = SavedCartTabContent.newInstance(position);
+        }
 
         return tabContent;
     }

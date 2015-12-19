@@ -12,7 +12,8 @@
         android:layout_height="match_parent"
         android:id="@+id/addReceiptButton"
         android:clickable="true"
-        android:src="@mipmap/ic_launcher"
+        android:src="@drawable/ic_note_add"
         android:layout_gravity="end"
+        android:padding="@dimen/spacing_normal"
         />
 </android.support.v7.widget.Toolbar>
