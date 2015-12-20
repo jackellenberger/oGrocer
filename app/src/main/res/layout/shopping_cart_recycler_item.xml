@@ -18,20 +18,20 @@
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
+    android:layout_width="fill_parent"
     android:layout_height="@dimen/cart_recycler_item_height"
     android:background="@drawable/bg_swipe_item_neutral">
 
     <FrameLayout
         android:id="@+id/container"
-        android:layout_width="match_parent"
+        android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:clickable="true"
         android:background="#ffffff"
         android:foreground="?attr/selectableItemBackground"
         android:orientation="horizontal" >
-        <LinearLayout
-            android:layout_width="match_parent"
+        <RelativeLayout
+            android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal">
             <ImageView
@@ -42,14 +42,15 @@
                 android:background="@color/grey5"
                 android:src="@drawable/ic_more_vert"
                 android:padding="@dimen/spacing_micro"
+                android:paddingStart="@dimen/spacing_normal"
                 />
             <CheckBox
                 android:id="@+id/bullet_icon"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
                 android:layout_margin="@dimen/spacing_micro"
-                android:buttonTint="@color/accentColor"
                 android:theme="@style/AppTheme.Light"
+                android:layout_toEndOf="@id/drag_handle"
                 />
             <TextView
                 android:id="@+id/recycler_item_text"
@@ -59,14 +60,18 @@
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextHeaderSub"
-                tools:ignore="RtlHardcoded"/>
+                android:layout_toEndOf="@id/bullet_icon"
+                />
             <ImageView
                 android:id="@+id/cart_recycler_delete"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="end"
-                android:src="@mipmap/ic_launcher"/>
-        </LinearLayout>
+                android:alpha="0.37"
+                android:src="@drawable/ic_action_cancel"
+                android:layout_alignParentEnd="true"
+                />
+        </RelativeLayout>
 
     </FrameLayout>
 

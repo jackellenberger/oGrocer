@@ -214,6 +214,9 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     @Override
     public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
+        if (groupPosition == mProvider.getGroupCount()-1){
+            Log.d("WHEREAMI","clicked last group");
+        }
         // group item
         final AbstractExpandableDataProvider.GroupData item = mProvider.getGroupItem(groupPosition);
 
@@ -265,6 +268,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         // set swiping properties
         holder.setSwipeItemHorizontalSlideAmount(
                 item.isPinned() ? Swipeable.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
+
     }
 
     @Override
