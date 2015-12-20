@@ -23,6 +23,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -40,7 +41,6 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
-import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 
 class MyExpandableDraggableSwipeableItemAdapter
         extends AbstractExpandableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder>
@@ -86,6 +86,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         public View mDragHandle;
         public TextView mTextView;
         private int mExpandStateFlags;
+        public int tabID;
 
         public MyBaseViewHolder(View v) {
             super(v);
@@ -117,6 +118,10 @@ class MyExpandableDraggableSwipeableItemAdapter
             super(v);
             //mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
         }
+        public MyGroupViewHolder(View v, int tabID){
+            super(v);
+            this.tabID = tabID;
+        }
     }
 
     public static class MyChildViewHolder extends MyBaseViewHolder {
@@ -133,12 +138,14 @@ class MyExpandableDraggableSwipeableItemAdapter
         mItemViewOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                onItemViewClick(v);
+                Log.d("ItemViewOnClickListener",v.getClass().getName());
+                    onItemViewClick(v);
             }
         };
         mSwipeableViewContainerOnClickListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //child item click
                 onSwipeableViewContainerClick(v);
             }
         };
@@ -149,15 +156,21 @@ class MyExpandableDraggableSwipeableItemAdapter
     }
 
     private void onItemViewClick(View v) {
+        Log.d("onItemViewClick",v.getClass().getName());
         if (mEventListener != null) {
             mEventListener.onItemViewClicked(v, true);  // true --- pinned
         }
     }
 
     private void onSwipeableViewContainerClick(View v) {
+        Log.d("onSwipeableViewContainerClick","child click disabled");
+        return;
+        /*
         if (mEventListener != null) {
             mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
         }
+        */
+
     }
 
     @Override
@@ -194,11 +207,23 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v;
-        if (parent.findViewById(R.id.shopping_cart_recycler) != null)
+        if (parent.findViewById(R.id.shopping_cart_recycler) != null) {
             v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
-        else
+            CheckBox cb = (CheckBox) v.findViewById(R.id.cart_checkbox);
+            cb.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Log.d("Checkbox","clicked");
+
+                }
+            });
+            return new MyGroupViewHolder(v,0);
+        }
+        else {
             v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
-        return new MyGroupViewHolder(v);
+            return new MyGroupViewHolder(v, 1);
+        }
+
     }
 
     @Override
@@ -214,9 +239,6 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     @Override
     public void onBindGroupViewHolder(MyGroupViewHolder holder, int groupPosition, int viewType) {
-        if (groupPosition == mProvider.getGroupCount()-1){
-            Log.d("WHEREAMI","clicked last group");
-        }
         // group item
         final AbstractExpandableDataProvider.GroupData item = mProvider.getGroupItem(groupPosition);
 
@@ -288,22 +310,29 @@ class MyExpandableDraggableSwipeableItemAdapter
         final int dragState = holder.getDragStateFlags();
         final int swipeState = holder.getSwipeStateFlags();
 
-        if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0) ||
-                ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
+        if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0) || ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
             int bgResId;
 
-            if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0) {
+            if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0)
+            {
                 bgResId = R.drawable.bg_item_dragging_active_state;
-
                 // need to clear drawable state here to get correct appearance of the dragging item.
                 clearState(holder.mContainer.getForeground());
-            } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
+            }
+            else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0)
+            {
                 bgResId = R.drawable.bg_item_dragging_state;
-            } else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {
+            }
+            else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0)
+            {
                 bgResId = R.drawable.bg_item_swiping_active_state;
-            } else if ((swipeState & Swipeable.STATE_FLAG_SWIPING) != 0) {
+            }
+            else if ((swipeState & Swipeable.STATE_FLAG_SWIPING) != 0)
+            {
                 bgResId = R.drawable.bg_item_swiping_state;
-            } else {
+            }
+            else
+            {
                 bgResId = R.drawable.bg_item_normal_state;
             }
 
@@ -385,11 +414,16 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     @Override
     public int onGetGroupItemSwipeReactionType(MyGroupViewHolder holder, int groupPosition, int x, int y) {
+        if (holder.tabID == 0)
+            return Swipeable.REACTION_CAN_SWIPE_RIGHT;
+        else
+            return Swipeable.REACTION_CAN_SWIPE_LEFT;
+        /*
         if (onCheckGroupCanStartDrag(holder, groupPosition, x, y)) {
             return Swipeable.REACTION_CAN_NOT_SWIPE_BOTH_H;
         }
-
         return Swipeable.REACTION_CAN_SWIPE_BOTH_H;
+        */
     }
 
     @Override
@@ -397,7 +431,6 @@ class MyExpandableDraggableSwipeableItemAdapter
         if (onCheckChildCanStartDrag(holder, groupPosition, childPosition, x, y)) {
             return Swipeable.REACTION_CAN_NOT_SWIPE_BOTH_H;
         }
-
         return Swipeable.REACTION_CAN_SWIPE_BOTH_H;
     }
 
@@ -456,6 +489,7 @@ class MyExpandableDraggableSwipeableItemAdapter
                 return new GroupSwipeLeftResultAction(this, groupPosition);
             // other --- do nothing
             case Swipeable.RESULT_CANCELED:
+                Log.d("RESULT_CANCELED","but why");
             default:
                 if (groupPosition != RecyclerView.NO_POSITION) {
                     return new GroupUnpinResultAction(this, groupPosition);

@@ -37,14 +37,16 @@
             <ImageView
                 android:id="@+id/drag_handle"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="fill_parent"
                 android:layout_gravity="start"
                 android:background="@color/grey5"
                 android:src="@drawable/ic_more_vert"
-                android:padding="@dimen/spacing_micro"
+                android:paddingTop="@dimen/spacing_micro"
+                android:paddingBottom="@dimen/spacing_micro"
+                android:paddingStart="@dimen/padding_normal"
                 />
             <ImageView
-                android:id="@+id/bullet_icon"
+                android:id="@+id/cart_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_margin="@dimen/spacing_micro"
@@ -60,14 +62,14 @@
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextHeaderSub"
-                android:layout_toEndOf="@id/bullet_icon"
+                android:layout_toEndOf="@id/cart_checkbox"
                 />
             <ImageView
                 android:id="@+id/cart_recycler_delete"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="28dp"
                 android:layout_gravity="end"
-                android:alpha="0.37"
+                android:alpha="0.28"
                 android:src="@drawable/ic_action_cancel"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true" />

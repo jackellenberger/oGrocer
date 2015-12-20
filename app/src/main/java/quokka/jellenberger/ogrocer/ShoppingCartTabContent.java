@@ -177,7 +177,7 @@ public class ShoppingCartTabContent extends Fragment
 
 
         // NOTE:
-        // The initialization order is very important! This order determines the priority of touch event handling.
+        // The initialization order is very important! This order determines the priority of ` event handling.
         //
         // priority: TouchActionGuard > Swipe > DragAndDrop > ExpandableItem
         mRecyclerViewTouchActionGuardManager.attachRecyclerView(mRecyclerView);
