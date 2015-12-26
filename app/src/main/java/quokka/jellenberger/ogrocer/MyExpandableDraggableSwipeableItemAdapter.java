@@ -83,7 +83,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     public static abstract class MyBaseViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
         public FrameLayout mContainer;
-        public View mDragHandle;
+        public View mDragHandle, mCheckBox, mDeleteItem;
         public TextView mTextView;
         private int mExpandStateFlags;
         public int tabID;
@@ -92,6 +92,8 @@ class MyExpandableDraggableSwipeableItemAdapter
             super(v);
             mContainer = (FrameLayout) v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
+            mCheckBox = v.findViewById(R.id.cart_checkbox);
+            mDeleteItem = v.findViewById(R.id.cart_recycler_delete);
             mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
         }
 
@@ -359,11 +361,15 @@ class MyExpandableDraggableSwipeableItemAdapter
 
         final View containerView = holder.mContainer;
         final View dragHandleView = holder.mDragHandle;
+        final View CheckBoxView = holder.mCheckBox;
+        final View deleteItemView = holder.mDeleteItem;
 
         final int offsetX = containerView.getLeft() + (int) (ViewCompat.getTranslationX(containerView) + 0.5f);
         final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
 
-        return !ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
+        return !ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY)
+                && !ViewUtils.hitTest(CheckBoxView, x-offsetX, y-offsetY)
+                && !ViewUtils.hitTest(deleteItemView, x-offsetX, y-offsetY);
     }
 
     @Override
