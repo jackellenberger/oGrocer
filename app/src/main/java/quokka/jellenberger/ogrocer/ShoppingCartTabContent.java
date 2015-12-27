@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -82,7 +83,6 @@ public class ShoppingCartTabContent extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
-
         _tabID = getTabID();
         return contentView;
     }
@@ -134,6 +134,7 @@ public class ShoppingCartTabContent extends Fragment
             @Override
             public void onGroupItemPinned(int groupPosition) {
                 ( (ShoppingCartView) getActivity()).onGroupItemPinned(groupPosition);
+                Log.d("Group Pinned", "uhhuh");
             }
 
             @Override
@@ -184,6 +185,9 @@ public class ShoppingCartTabContent extends Fragment
         mRecyclerViewSwipeManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
+
+        // allow child (recycler) to handle touch events, or give them up to slidingtablayout when applicable
+        ViewUtils.setTwoPane(mRecyclerView,_tabID);
     }
 
     @Override

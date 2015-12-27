@@ -158,14 +158,14 @@ class MyExpandableDraggableSwipeableItemAdapter
     }
 
     private void onItemViewClick(View v) {
-        Log.d("onItemViewClick",v.getClass().getName());
+        Log.d("onItemViewClick", v.getClass().getName());
         if (mEventListener != null) {
             mEventListener.onItemViewClicked(v, true);  // true --- pinned
         }
     }
 
     private void onSwipeableViewContainerClick(View v) {
-        Log.d("onSwipeableViewContainerClick","child click disabled");
+        Log.d("onSwipeableViewContainerClick", "child click disabled");
         return;
         /*
         if (mEventListener != null) {
@@ -496,6 +496,7 @@ class MyExpandableDraggableSwipeableItemAdapter
             // other --- do nothing
             case Swipeable.RESULT_CANCELED:
                 Log.d("RESULT_CANCELED","but why");
+                return null;
             default:
                 if (groupPosition != RecyclerView.NO_POSITION) {
                     return new GroupUnpinResultAction(this, groupPosition);

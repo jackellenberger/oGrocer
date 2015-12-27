@@ -20,7 +20,9 @@ package quokka.jellenberger.ogrocer;
  */
 
     import android.support.v4.view.ViewCompat;
-    import android.view.View;
+import android.support.v7.widget.RecyclerView;
+import android.view.MotionEvent;
+import android.view.View;
 
 public class ViewUtils {
     public static boolean hitTest(View v, int x, int y) {
@@ -32,5 +34,46 @@ public class ViewUtils {
         final int bottom = v.getBottom() + ty;
 
         return (x >= left) && (x <= right) && (y >= top) && (y <= bottom);
+    }
+
+    public static void setTwoPane(RecyclerView mRecyclerView, final int tabPosition) {
+        mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
+            private Float x1, x2;
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                switch (event.getAction()) {
+                    case MotionEvent.ACTION_DOWN: //this never seems to happen?
+                        x1 = event.getX();
+                        if (x1 > 73) {
+                            //leave room for drawer to be pulled
+                            v.getParent().requestDisallowInterceptTouchEvent(true);
+                        } break;
+                    case MotionEvent.ACTION_MOVE:
+                        if (x1 == null) {
+                            x1 = event.getX();
+                        } else {
+                            x2 = event.getX();
+                            //if you sliding (in the allowed direction) allow for intercept to be handled by slidingTabLayout
+                            if (tabPosition == 0){
+                                if (x2 < x1) {
+                                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                            else {
+                                if (x1 < x2) {
+                                    v.getParent().requestDisallowInterceptTouchEvent(false);
+                                }
+                            }
+                        }
+                        break;
+                    case MotionEvent.ACTION_UP | MotionEvent.ACTION_CANCEL:
+                        x1 = x2 = null;
+                        break;
+                    default:
+                        break;
+                }
+                return false;
+            }
+        });
     }
 }

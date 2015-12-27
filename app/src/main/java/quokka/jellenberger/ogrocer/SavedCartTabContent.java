@@ -183,6 +183,9 @@ public class SavedCartTabContent extends Fragment
         mRecyclerViewSwipeManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewDragDropManager.attachRecyclerView(mRecyclerView);
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
+
+        // allow child (recycler) to handle touch events, or give them up to slidingtablayout when applicable
+        ViewUtils.setTwoPane(mRecyclerView, _tabID);
     }
 
     @Override

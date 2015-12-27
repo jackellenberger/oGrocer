@@ -40,7 +40,8 @@
                 android:layout_height="fill_parent"
                 android:layout_gravity="start"
                 android:background="@color/grey5"
-                android:src="@drawable/ic_more_vert"
+                android:src="@drawable/drag_handle"
+                android:tint="@color/white"
                 android:padding="@dimen/spacing_micro"
                 android:paddingStart="@dimen/padding_normal"
                 />
