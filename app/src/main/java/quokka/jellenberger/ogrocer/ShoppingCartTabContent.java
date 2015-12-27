@@ -1,6 +1,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
@@ -15,6 +16,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.CheckBox;
+import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
@@ -316,5 +319,22 @@ public class ShoppingCartTabContent extends Fragment
     public AbstractExpandableDataProvider getDataProvider() {
         final Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
         return ((ShoppingCartTabContent) fragment).getDataProvider();
+    }
+
+    public static void toggleCartItemChecked(View v){
+        CheckBox cb = (CheckBox) v;
+        View container = (View) v.getParent().getParent();
+        TextView tv = (TextView) container.findViewById(R.id.recycler_item_text);
+        if (cb.isChecked()){
+            container.setBackgroundColor(ContextCompat.getColor(v.getContext(),R.color.grey5));
+            tv.setPaintFlags(tv.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            tv.setTextColor(ContextCompat.getColor(v.getContext(),R.color.primaryTextLight));
+        }
+        else {
+            container.setBackgroundColor(ContextCompat.getColor(v.getContext(), R.color.white));
+            tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            tv.setTextColor(ContextCompat.getColor(v.getContext(), R.color.primaryText));
+        }
+
     }
 }

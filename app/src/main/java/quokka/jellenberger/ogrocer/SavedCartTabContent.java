@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -314,5 +315,9 @@ public class SavedCartTabContent extends Fragment
     public AbstractExpandableDataProvider getDataProvider() {
         final Fragment fragment = getActivity().getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
         return ((SavedCartTabContent) fragment).getDataProvider();
+    }
+
+    public static void movedSavedItemToCart(View v){
+        Log.d("TODO", "write moveSavedItemToCart");
     }
 }

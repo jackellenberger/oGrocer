@@ -25,6 +25,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.h6ah4i.android.widget.advrecyclerview.draggable.DraggableItemConstants;
@@ -215,14 +216,20 @@ class MyExpandableDraggableSwipeableItemAdapter
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Log.d("Checkbox","clicked");
-
+                    ShoppingCartTabContent.toggleCartItemChecked(v);
                 }
             });
             return new MyGroupViewHolder(v,0);
         }
         else {
             v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
+            ImageView iv = (ImageView) v.findViewById(R.id.cart_checkbox);
+            iv.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    SavedCartTabContent.movedSavedItemToCart(v);
+                }
+            });
             return new MyGroupViewHolder(v, 1);
         }
 

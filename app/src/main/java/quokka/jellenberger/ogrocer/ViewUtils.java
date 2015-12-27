@@ -19,7 +19,7 @@ package quokka.jellenberger.ogrocer;
  *    limitations under the License.
  */
 
-    import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
@@ -44,26 +44,21 @@ public class ViewUtils {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: //this never seems to happen?
                         x1 = event.getX();
-                        if (x1 > 73) {
-                            //leave room for drawer to be pulled
+                        if (x1 > 73) //leave room for drawer to be pulled
                             v.getParent().requestDisallowInterceptTouchEvent(true);
-                        } break;
+                        break;
                     case MotionEvent.ACTION_MOVE:
-                        if (x1 == null) {
+                        if (x1 == null)
                             x1 = event.getX();
-                        } else {
+                        else {
                             x2 = event.getX();
                             //if you sliding (in the allowed direction) allow for intercept to be handled by slidingTabLayout
-                            if (tabPosition == 0){
-                                if (x2 < x1) {
+                            if (tabPosition == 0)
+                                if (x2 < x1)
                                     v.getParent().requestDisallowInterceptTouchEvent(false);
-                                }
-                            }
-                            else {
-                                if (x1 < x2) {
+                            else
+                                if (x1 < x2)
                                     v.getParent().requestDisallowInterceptTouchEvent(false);
-                                }
-                            }
                         }
                         break;
                     case MotionEvent.ACTION_UP | MotionEvent.ACTION_CANCEL:
@@ -76,4 +71,5 @@ public class ViewUtils {
             }
         });
     }
+
 }
