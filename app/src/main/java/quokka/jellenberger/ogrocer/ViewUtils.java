@@ -21,6 +21,7 @@ package quokka.jellenberger.ogrocer;
 
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -36,35 +37,51 @@ public class ViewUtils {
         return (x >= left) && (x <= right) && (y >= top) && (y <= bottom);
     }
 
-    public static void setTwoPane(RecyclerView mRecyclerView, final int tabPosition) {
+    public static void setTwoPane(RecyclerView mRecyclerView, int tabPosition) {
+        final int tabPos[] = new int[1];
+        tabPos[0] = tabPosition;
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
             private Float x1, x2;
             @Override
             public boolean onTouch(View v, MotionEvent event) {
                 switch (event.getAction()) {
                     case MotionEvent.ACTION_DOWN: //this never seems to happen?
+                        Log.d("setTwoPane","ACTION DOWN");
                         x1 = event.getX();
                         if (x1 > 73) //leave room for drawer to be pulled
                             v.getParent().requestDisallowInterceptTouchEvent(true);
                         break;
                     case MotionEvent.ACTION_MOVE:
-                        if (x1 == null)
+                        if (x1 == null){
+                            Log.d("setTwoPane","ACTION MOVE - SET X1");
                             x1 = event.getX();
+                        }
                         else {
+                            Log.d("setTwoPane","ACTION DOWN - SET X2");
                             x2 = event.getX();
+                            v.getParent().requestDisallowInterceptTouchEvent(false);
                             //if you sliding (in the allowed direction) allow for intercept to be handled by slidingTabLayout
-                            if (tabPosition == 0)
-                                if (x2 < x1)
+                            if (tabPos[0] == 0)
+                                if (x2 < x1){
+                                    Log.d("setTwoPane","tab pos 0 allow tab change");
                                     v.getParent().requestDisallowInterceptTouchEvent(false);
+                                }
+                                else v.getParent().requestDisallowInterceptTouchEvent(true);
                             else
-                                if (x1 < x2)
+                                if (x1 < x2) {
+                                    Log.d("setTwoPane","tab pos 1 allow tab change");
                                     v.getParent().requestDisallowInterceptTouchEvent(false);
+                                }
+                                else v.getParent().requestDisallowInterceptTouchEvent(true);
                         }
                         break;
                     case MotionEvent.ACTION_UP | MotionEvent.ACTION_CANCEL:
+                        Log.d("setTwoPane","ACTION UP / ACTION CANCEL RESET");
                         x1 = x2 = null;
+                        v.getParent().requestDisallowInterceptTouchEvent(false);
                         break;
                     default:
+                        Log.d("SOMETHING ELSE HAPPENED",String.valueOf(event.getAction()));
                         break;
                 }
                 return false;
