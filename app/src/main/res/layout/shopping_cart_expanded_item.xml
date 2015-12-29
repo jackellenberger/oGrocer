@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+       Copyright (C) 2015 Haruki Hasegawa
+
+       Licensed under the Apache License, Version 2.0 (the "License");
+       you may not use this file except in compliance with the License.
+       You may obtain a copy of the License at
+
+           http://www.apache.org/licenses/LICENSE-2.0
+
+       Unless required by applicable law or agreed to in writing, software
+       distributed under the License is distributed on an "AS IS" BASIS,
+       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+       See the License for the specific language governing permissions and
+       limitations under the License.
+-->
+<!-- NOTE: should use FrameLayout or RelativeLayout for parent of the "@id/container" view (for Android 2.3 compatibility) -->
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/bg_swipe_item_neutral">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:background="#ffffff"
+        android:foreground="?attr/selectableItemBackground"
+        android:orientation="horizontal" >
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:visibility="gone">
+            <ImageView
+                android:id="@+id/drag_handle"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:background="@color/grey5"
+                android:src="@drawable/drag_handle"
+                android:tint="@color/white"
+                android:padding="@dimen/spacing_micro"
+                android:paddingStart="@dimen/padding_normal"
+                />
+            <CheckBox
+                android:id="@+id/cart_checkbox"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_margin="@dimen/spacing_micro"
+                android:theme="@style/AppTheme.Light"
+                android:layout_toEndOf="@id/drag_handle"
+                />
+            <TextView
+                android:id="@+id/recycler_item_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextHeaderSub"
+                android:layout_toEndOf="@id/cart_checkbox"
+                />
+            <ImageView
+                android:id="@+id/cart_recycler_delete"
+                android:layout_width="wrap_content"
+                android:layout_height="28dp"
+                android:layout_gravity="end"
+                android:alpha="0.28"
+                android:src="@drawable/ic_action_cancel"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true" />
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_normal"
+            android:paddingTop="0dp">
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cart_recycler_item_picture_height"
+                android:background="@color/grey5"
+                android:src="@drawable/ic_action_add"/>
+            <View
+                android:layout_width="match_parent" android:layout_height="1dp" android:layout_margin="5dp"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:textAppearance="@style/TextHeader"
+                android:background="@color/white"
+                android:padding="@dimen/spacing_micro"
+                android:id="@+id/cart_expanded_quantity"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cart_recycler_item_height"
+                android:text="QUANTITY"/>
+            <View
+                android:layout_width="match_parent" android:layout_height="1dp" android:layout_margin="5dp"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:textAppearance="@style/TextHeader"
+                android:background="@color/white"
+                android:padding="@dimen/spacing_micro"
+                android:id="@+id/cart_expanded_stores"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cart_recycler_item_height"
+                android:text="STORES"/>
+            <View
+                android:layout_width="match_parent" android:layout_height="1dp" android:layout_margin="5dp"
+                android:background="@android:color/darker_gray"/>
+            <TextView
+                android:textAppearance="@style/TextHeader"
+                android:background="@color/white"
+                android:padding="@dimen/spacing_micro"
+                android:id="@+id/cart_expanded_recipes"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/cart_recycler_item_height"
+                android:text="RECIPES"/>
+        </LinearLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

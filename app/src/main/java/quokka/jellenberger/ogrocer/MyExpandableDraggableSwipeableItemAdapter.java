@@ -90,11 +90,11 @@ class MyExpandableDraggableSwipeableItemAdapter
         public int tabID;
 
         public MyBaseViewHolder(View v) {
-            super(v);
-            mContainer = (FrameLayout) v.findViewById(R.id.container);
-            mDragHandle = v.findViewById(R.id.drag_handle);
-            mCheckBox = v.findViewById(R.id.cart_checkbox);
-            mDeleteItem = v.findViewById(R.id.cart_recycler_delete);
+            super(v); Log.d("hey", "super called");
+            mContainer = (FrameLayout) v.findViewById(R.id.container); Log.d("hey", "found container");
+            mDragHandle = v.findViewById(R.id.drag_handle); Log.d("hey","found handle");
+            mCheckBox = v.findViewById(R.id.cart_checkbox); Log.d("hey","found checkbox");
+            mDeleteItem = v.findViewById(R.id.cart_recycler_delete); Log.d("hey","found delete");
             mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
         }
 
@@ -240,7 +240,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v;
         if (parent.findViewById(R.id.shopping_cart_recycler) != null)
-            v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
+            v = inflater.inflate(R.layout.shopping_cart_expanded_item, parent, false);
         else
             v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
         return new MyChildViewHolder(v);
