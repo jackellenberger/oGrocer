@@ -16,6 +16,7 @@
 
 package quokka.jellenberger.ogrocer;
 
+import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
@@ -90,11 +91,11 @@ class MyExpandableDraggableSwipeableItemAdapter
         public int tabID;
 
         public MyBaseViewHolder(View v) {
-            super(v); Log.d("hey", "super called");
-            mContainer = (FrameLayout) v.findViewById(R.id.container); Log.d("hey", "found container");
-            mDragHandle = v.findViewById(R.id.drag_handle); Log.d("hey","found handle");
-            mCheckBox = v.findViewById(R.id.cart_checkbox); Log.d("hey","found checkbox");
-            mDeleteItem = v.findViewById(R.id.cart_recycler_delete); Log.d("hey","found delete");
+            super(v);
+            mContainer = (FrameLayout) v.findViewById(R.id.container);
+            mDragHandle = v.findViewById(R.id.drag_handle);
+            mCheckBox = v.findViewById(R.id.cart_checkbox);
+            mDeleteItem = v.findViewById(R.id.cart_recycler_delete);
             mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
         }
 
@@ -102,35 +103,58 @@ class MyExpandableDraggableSwipeableItemAdapter
         public int getExpandStateFlags() {
             return mExpandStateFlags;
         }
-
         @Override
         public void setExpandStateFlags(int flag) {
             mExpandStateFlags = flag;
         }
-
         @Override
         public View getSwipeableContainerView() {
             return mContainer;
         }
     }
 
-    public static class MyGroupViewHolder extends MyBaseViewHolder {
-        //public ExpandableItemIndicator mIndicator;
+    public static class MyGroupViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
+        public FrameLayout mContainer;
+        public View mDragHandle, mCheckBox, mDeleteItem;
+        public TextView mTextView;
+        private int mExpandStateFlags;
+        public int tabID;
+        Context holderContext;
 
-        public MyGroupViewHolder(View v) {
-            super(v);
-            //mIndicator = (ExpandableItemIndicator) v.findViewById(R.id.indicator);
-        }
         public MyGroupViewHolder(View v, int tabID){
             super(v);
+            mContainer = (FrameLayout) v.findViewById(R.id.container);
+            mDragHandle = v.findViewById(R.id.drag_handle);
+            mCheckBox = v.findViewById(R.id.cart_checkbox);
+            mDeleteItem = v.findViewById(R.id.cart_recycler_delete);
+            mTextView = (TextView) v.findViewById(R.id.recycler_item_text);
             this.tabID = tabID;
+            this.holderContext = v.getContext();
         }
+        @Override
+        public int getExpandStateFlags() { return mExpandStateFlags; }
+        @Override
+        public void setExpandStateFlags(int flag) { mExpandStateFlags = flag; }
+        @Override
+        public View getSwipeableContainerView() { return mContainer; }
     }
 
-    public static class MyChildViewHolder extends MyBaseViewHolder {
-        public MyChildViewHolder(View v) {
+    public static class MyChildViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
+        public FrameLayout mContainer;
+        private int mExpandStateFlags;
+        public int tabID;
+
+        public MyChildViewHolder(View v, int tabID) {
             super(v);
+            this.tabID = tabID;
+            mContainer = (FrameLayout) v.findViewById(R.id.container);
         }
+        @Override
+        public int getExpandStateFlags() { return mExpandStateFlags; }
+        @Override
+        public void setExpandStateFlags(int flag) { mExpandStateFlags = flag; }
+        @Override
+        public View getSwipeableContainerView() { return mContainer; }
     }
 
     public MyExpandableDraggableSwipeableItemAdapter(
@@ -239,11 +263,14 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyChildViewHolder onCreateChildViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v;
-        if (parent.findViewById(R.id.shopping_cart_recycler) != null)
-            v = inflater.inflate(R.layout.shopping_cart_expanded_item, parent, false);
-        else
+        if (parent.findViewById(R.id.shopping_cart_recycler) != null) {
+            v = inflater.inflate(R.layout.shopping_cart_expanded_item_container, parent, false);
+            return new MyChildViewHolder(v,0);
+        }
+        else {
             v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
-        return new MyChildViewHolder(v);
+            return new MyChildViewHolder(v,1);
+        }
     }
 
     @Override
@@ -261,7 +288,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         final int dragState = holder.getDragStateFlags();
         final int expandState = holder.getExpandStateFlags();
         final int swipeState = holder.getSwipeStateFlags();
-
+        /*
         if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0) ||
                 ((expandState & Expandable.STATE_FLAG_IS_UPDATED) != 0) ||
                 ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
@@ -295,7 +322,7 @@ class MyExpandableDraggableSwipeableItemAdapter
             holder.mContainer.setBackgroundResource(bgResId);
             //holder.mIndicator.setExpandedState(isExpanded, animateIndicator);
         }
-
+        */
         // set swiping properties
         holder.setSwipeItemHorizontalSlideAmount(
                 item.isPinned() ? Swipeable.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
@@ -307,6 +334,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         // child item
         final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
 
+        /*
         // set listeners
         // (if the item is *not pinned*, click event comes to the itemView)
         holder.itemView.setOnClickListener(mItemViewOnClickListener);
@@ -315,7 +343,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
         // set text
         holder.mTextView.setText(item.getText());
-
+        */
         final int dragState = holder.getDragStateFlags();
         final int swipeState = holder.getSwipeStateFlags();
 
@@ -394,6 +422,7 @@ class MyExpandableDraggableSwipeableItemAdapter
     @Override
     public boolean onCheckChildCanStartDrag(MyChildViewHolder holder, int groupPosition, int childPosition, int x, int y) {
         // x, y --- relative from the itemView's top-left
+        /*
         final View containerView = holder.mContainer;
         final View dragHandleView = holder.mDragHandle;
 
@@ -401,6 +430,8 @@ class MyExpandableDraggableSwipeableItemAdapter
         final int offsetY = containerView.getTop() + (int) (ViewCompat.getTranslationY(containerView) + 0.5f);
 
         return ViewUtils.hitTest(dragHandleView, x - offsetX, y - offsetY);
+        */
+        return false; //make children undragable
     }
 
     @Override
@@ -455,14 +486,17 @@ class MyExpandableDraggableSwipeableItemAdapter
                 bgResId = R.drawable.bg_swipe_item_neutral;
                 break;
             case Swipeable.DRAWABLE_SWIPE_LEFT_BACKGROUND:
-                bgResId = R.drawable.bg_swipe_group_item_left;
+                //bgResId = R.drawable.bg_swipe_group_item_left;
+                bgResId = R.layout.bg_swipe_group_item_left;
                 break;
             case Swipeable.DRAWABLE_SWIPE_RIGHT_BACKGROUND:
                 bgResId = R.drawable.bg_swipe_group_item_right;
                 break;
         }
-
-        holder.itemView.setBackgroundResource(bgResId);
+        TextDrawable td = new TextDrawable(holder.holderContext,holder.tabID);
+        //holder.itemView.setBackgroundResource(R.);
+        holder.itemView.setBackgroundColor(holder.holderContext.getResources().getColor(R.color.grey));
+        holder.itemView.setBackground(td);
     }
 
     @Override

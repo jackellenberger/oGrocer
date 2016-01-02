@@ -19,6 +19,7 @@
         <color android:color="@color/bg_swipe_group_item_pinned"/>
     </item>
     <item android:right="16dp">
+
         <bitmap
             android:src="@drawable/ic_item_swipe_pinned"
             android:gravity="right|center_vertical"/>

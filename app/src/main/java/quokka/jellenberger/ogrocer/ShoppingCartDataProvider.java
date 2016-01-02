@@ -26,23 +26,24 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
 
     public ShoppingCartDataProvider() {
         final String groupItems[] = {"2% Milk","Dinner Rolls","Orange Juice","Potatoes"};
-        final String childItems = "a";
+        final String childItems[] = {"Image","Quantity","Best Price","Stores","Recipes"};
 
         mData = new LinkedList<>();
 
         for (int i = 0; i < groupItems.length; i++) {
-            //noinspection UnnecessaryLocalVariable
             final long groupId = i;
             final String groupText = groupItems[i];
             final ConcreteGroupData group = new ConcreteGroupData(groupId, groupText);
             final List<ChildData> children = new ArrayList<>();
 
-            for (int j = 0; j < childItems.length(); j++) {
+            children.add(new ConcreteChildData(groupId,groupItems[i]));
+            /*
+            for (int j = 0; j < childItems.length; j++) {
                 final long childId = group.generateNewChildId();
-                final String childText = Character.toString(childItems.charAt(j));
-
+                final String childText = childItems[j];
                 children.add(new ConcreteChildData(childId, childText));
             }
+            */
 
             mData.add(new Pair<GroupData, List<ChildData>>(group, children));
         }
