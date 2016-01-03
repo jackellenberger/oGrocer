@@ -10,13 +10,18 @@
     <color name="accentColorReallyLight">#E1BEE7</color>
     <color name="accentColorDark">#7B1FA2</color>
 
-    <color name="grey5">#1b1b1b1b</color>
-    <color name="grey4">#10ffffff</color>
-    <color name="grey3">#1Fffffff</color>
-    <color name="grey2">#61ffffff</color>
-    <color name="grey1">#8Affffff</color>
-    <color name="grey">#DEffffff</color>
     <color name="white">#ffffffff</color>
+
+    <color name="grey50"> #FAFAFA </color>
+    <color name="grey100"> #F5F5F5 </color>
+    <color name="grey200"> #EEEEEE </color>
+    <color name="grey300"> #E0E0E0 </color>
+    <color name="grey400"> #BDBDBD </color>
+    <color name="grey500"> #9E9E9E </color>
+    <color name="grey600"> #757575 </color>
+    <color name="grey700"> #616161 </color>
+    <color name="grey800"> #424242 </color>
+    <color name="grey900"> #212121 </color>
 
     <color name="primaryText">#212121</color>
     <color name="secondaryText">#727272</color>

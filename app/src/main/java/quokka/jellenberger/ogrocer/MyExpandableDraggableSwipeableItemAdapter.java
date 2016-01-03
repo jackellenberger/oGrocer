@@ -19,7 +19,6 @@ package quokka.jellenberger.ogrocer;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -143,6 +142,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         public FrameLayout mContainer;
         private int mExpandStateFlags;
         public int tabID;
+        private int mCurrentGroup;
 
         public MyChildViewHolder(View v, int tabID) {
             super(v);
@@ -155,6 +155,9 @@ class MyExpandableDraggableSwipeableItemAdapter
         public void setExpandStateFlags(int flag) { mExpandStateFlags = flag; }
         @Override
         public View getSwipeableContainerView() { return mContainer; }
+
+        public void setCurrentGroup(int group) {mCurrentGroup = group;}
+        public int getCurrentGroup() {return mCurrentGroup;}
     }
 
     public MyExpandableDraggableSwipeableItemAdapter(
@@ -331,9 +334,9 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     @Override
     public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
+        holder.setCurrentGroup(groupPosition);
         // child item
         final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
-
         /*
         // set listeners
         // (if the item is *not pinned*, click event comes to the itemView)
@@ -495,7 +498,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         }
         TextDrawable td = new TextDrawable(holder.holderContext,holder.tabID);
         //holder.itemView.setBackgroundResource(R.);
-        holder.itemView.setBackgroundColor(holder.holderContext.getResources().getColor(R.color.grey));
+        holder.itemView.setBackgroundColor(holder.holderContext.getResources().getColor(R.color.grey100));
         holder.itemView.setBackground(td);
     }
 
@@ -520,37 +523,21 @@ class MyExpandableDraggableSwipeableItemAdapter
     @Override
     public SwipeResultAction onSwipeGroupItem(MyGroupViewHolder holder, int groupPosition, int result) {
         Log.d(TAG, "onSwipeGroupItem(groupPosition = " + groupPosition + ", result = " + result + ")");
-
-        switch (result) {
-            // swipe right
-            case Swipeable.RESULT_SWIPED_RIGHT:
-                if (mProvider.getGroupItem(groupPosition).isPinned()) {
-                    // pinned --- back to default position
-                    return new GroupUnpinResultAction(this, groupPosition);
-                } else {
-                    // not pinned --- remove
-                    return new GroupSwipeRightResultAction(this, groupPosition);
-                }
-                // swipe left -- pin
-            case Swipeable.RESULT_SWIPED_LEFT:
-                return new GroupSwipeLeftResultAction(this, groupPosition);
-            // other --- do nothing
-            case Swipeable.RESULT_CANCELED:
-                Log.d("RESULT_CANCELED","but why");
-                return null;
-            default:
-                if (groupPosition != RecyclerView.NO_POSITION) {
-                    return new GroupUnpinResultAction(this, groupPosition);
-                } else {
-                    return null;
-                }
+        if (holder.tabID == 0 && result == Swipeable.RESULT_SWIPED_RIGHT) { //shopping cart tab
+            return new GroupSwipeRightResultAction(this,groupPosition);
         }
+        else if (holder.tabID == 1 && result == Swipeable.RESULT_SWIPED_LEFT) {
+            return new GroupSwipeRightResultAction(this,groupPosition);
+        }
+        else
+            return null;
     }
 
     @Override
     public SwipeResultAction onSwipeChildItem(MyChildViewHolder holder, int groupPosition, int childPosition, int result) {
-        Log.d(TAG, "onSwipeChildItem(groupPosition = " + groupPosition + ", childPosition = " + childPosition + ", result = " + result + ")");
-
+        Log.d(TAG,"stop trying to swipe the children");
+        return null;
+        /*
         switch (result) {
             // swipe right
             case Swipeable.RESULT_SWIPED_RIGHT:
@@ -573,6 +560,7 @@ class MyExpandableDraggableSwipeableItemAdapter
                     return null;
                 }
         }
+        */
     }
 
     public EventListener getEventListener() {
