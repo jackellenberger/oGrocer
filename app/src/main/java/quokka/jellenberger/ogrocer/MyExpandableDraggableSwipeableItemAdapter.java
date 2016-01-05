@@ -246,6 +246,20 @@ class MyExpandableDraggableSwipeableItemAdapter
                     ShoppingCartTabContent.toggleCartItemChecked(v);
                 }
             });
+            View delete = v.findViewById(R.id.cart_recycler_delete);
+            delete.setTag(this);
+            delete.setOnClickListener(new View.OnClickListener(){
+                @Override
+                public void onClick(View v) {
+                    ShoppingCartView thisActivity = (ShoppingCartView) v.getContext();
+                    //((ShoppingCartView) v.getContext())._dataProviders[0].removeGroupItem(0);
+                    MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
+                    //get the real id somehow??
+                    GroupSwipeRightResultAction remover = new GroupSwipeRightResultAction(_adapter,0);
+                    remover.onPerformAction();
+                    Log.d("Hey","Shoulda just removed that item");
+                }
+            });
             return new MyGroupViewHolder(v,0);
         }
         else {

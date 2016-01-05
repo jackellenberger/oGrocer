@@ -39,6 +39,7 @@ public class ShoppingCartView extends AppCompatActivity
 
     AbstractExpandableDataProvider _dataProviders[] = {null,null};
 
+
     //DRAWER
     DrawerLayout _DrawerLayout;
     ActionBarDrawerToggle _DrawerToggle;
