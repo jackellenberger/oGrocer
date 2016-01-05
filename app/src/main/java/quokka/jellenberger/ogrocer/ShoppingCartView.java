@@ -46,8 +46,9 @@ public class ShoppingCartView extends AppCompatActivity
     RecyclerView _DrawerRecycler;
     RecyclerView.Adapter _DrawerRecyclerAdapter;
     RecyclerView.LayoutManager _DrawerRecyclerLayout;
-    String _DrawerStrings[] = {"Item 1","Item 2"};
-    int _DrawerIcons[] = {R.mipmap.ic_launcher, R.mipmap.ic_launcher};
+    String _DrawerStrings[] = {"Cart","History","Recipes","Stores","My Contributions","Settings"};
+    int _DrawerIcons[] = {R.drawable.ic_action_cart, R.drawable.ic_action_clock,R.drawable.ic_action_book,R.drawable.ic_action_location,R.drawable.ic_action_users,R.drawable.ic_action_settings};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
