@@ -56,6 +56,7 @@ public class ShoppingCartTabContent extends Fragment
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
     public AbstractExpandableDataProvider _dataProvider;
+    public MyExpandableDraggableSwipeableItemAdapter myItemAdapter;
 
     public static ShoppingCartTabContent newInstance(int position) {
         ShoppingCartTabContent f = new ShoppingCartTabContent();
@@ -120,7 +121,7 @@ public class ShoppingCartTabContent extends Fragment
         mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        final MyExpandableDraggableSwipeableItemAdapter myItemAdapter =
+        myItemAdapter =
                 new MyExpandableDraggableSwipeableItemAdapter(mRecyclerViewExpandableItemManager, _dataProvider);
 
         myItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {

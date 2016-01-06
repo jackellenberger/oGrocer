@@ -19,6 +19,7 @@ package quokka.jellenberger.ogrocer;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -42,13 +43,15 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultAct
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractDraggableSwipeableItemViewHolder;
 import com.h6ah4i.android.widget.advrecyclerview.utils.AbstractExpandableItemAdapter;
+import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
+
 
 class MyExpandableDraggableSwipeableItemAdapter
         extends AbstractExpandableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder>
         implements ExpandableDraggableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder>,
         ExpandableSwipeableItemAdapter<MyExpandableDraggableSwipeableItemAdapter.MyGroupViewHolder, MyExpandableDraggableSwipeableItemAdapter.MyChildViewHolder> {
-    private static final String TAG = "MyEDSItemAdapter";
 
+    private static final String TAG = "MyEDSItemAdapter";
     private static final int[] EMPTY_STATE = new int[] {};
 
     public static void clearState(Drawable drawable) {
@@ -59,9 +62,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     // NOTE: Make accessible with short name
     private interface Expandable extends ExpandableItemConstants {}
-
     private interface Draggable extends DraggableItemConstants {}
-
     private interface Swipeable extends SwipeableItemConstants {}
 
     private final RecyclerViewExpandableItemManager mExpandableItemManager;
@@ -122,6 +123,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
         public MyGroupViewHolder(View v, int tabID){
             super(v);
+
             mContainer = (FrameLayout) v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
             mCheckBox = v.findViewById(R.id.cart_checkbox);
@@ -237,30 +239,26 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v;
-        if (parent.findViewById(R.id.shopping_cart_recycler) != null) {
+        int tabID = (parent.findViewById(R.id.shopping_cart_recycler) != null) ? 0 : 1;
+        if (tabID == 0) {
             v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
             CheckBox cb = (CheckBox) v.findViewById(R.id.cart_checkbox);
+            cb.setTag(this);
             cb.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     ShoppingCartTabContent.toggleCartItemChecked(v);
+                    //TODO: optimization: don't call getAdapterPosition more than once?
+                    Log.d("moving from to",String.valueOf(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition()) + "to" + String.valueOf(RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1));
+                    //onMoveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
+                    ExpandablePositionTranslator pt = new ExpandablePositionTranslator();
+                    MyExpandableDraggableSwipeableItemAdapter thisAdapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
+                    //TODO: fuck this shit why won't it just animate like its supposed to.
+                    pt.build(thisAdapter,false);
+                    thisAdapter.onMoveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
+                    pt.moveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
                 }
             });
-            View delete = v.findViewById(R.id.cart_recycler_delete);
-            delete.setTag(this);
-            delete.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                    ShoppingCartView thisActivity = (ShoppingCartView) v.getContext();
-                    //((ShoppingCartView) v.getContext())._dataProviders[0].removeGroupItem(0);
-                    MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
-                    //get the real id somehow??
-                    GroupSwipeRightResultAction remover = new GroupSwipeRightResultAction(_adapter,0);
-                    remover.onPerformAction();
-                    Log.d("Hey","Shoulda just removed that item");
-                }
-            });
-            return new MyGroupViewHolder(v,0);
         }
         else {
             v = inflater.inflate(R.layout.saved_cart_recycler_item, parent, false);
@@ -271,9 +269,18 @@ class MyExpandableDraggableSwipeableItemAdapter
                     SavedCartTabContent.movedSavedItemToCart(v);
                 }
             });
-            return new MyGroupViewHolder(v, 1);
         }
-
+        View delete = v.findViewById(R.id.cart_recycler_delete);
+        delete.setTag(this);
+        delete.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
+                GroupSwipeRightResultAction remover = new GroupSwipeRightResultAction(_adapter,RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition());
+                remover.onPerformAction();
+            }
+        });
+        return new MyGroupViewHolder(v,tabID);
     }
 
     @Override
@@ -536,6 +543,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     @Override
     public SwipeResultAction onSwipeGroupItem(MyGroupViewHolder holder, int groupPosition, int result) {
+        //TODO: after dragging an item, swiping from one tab to another on the recycler is funky.
         Log.d(TAG, "onSwipeGroupItem(groupPosition = " + groupPosition + ", result = " + result + ")");
         if (holder.tabID == 0 && result == Swipeable.RESULT_SWIPED_RIGHT) { //shopping cart tab
             return new GroupSwipeRightResultAction(this,groupPosition);
