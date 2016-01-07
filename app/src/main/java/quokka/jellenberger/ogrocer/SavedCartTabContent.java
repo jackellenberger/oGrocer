@@ -12,6 +12,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +26,8 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandab
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+
+import java.util.List;
 
 /**
  * Created by jellenberger on 12/15/15.
@@ -40,7 +43,7 @@ public class SavedCartTabContent extends Fragment
 
     public int _currentTab;
     public static int _tabID;
-    Context _activityContext;
+    static Context _activityContext;
     Drawable bulletIcon;
 
     private RecyclerView mRecyclerView;
@@ -317,7 +320,13 @@ public class SavedCartTabContent extends Fragment
         return ((SavedCartTabContent) fragment).getDataProvider();
     }
 
-    public static void movedSavedItemToCart(View v){
+    public static void movedSavedItemToCart(int pos){
         Log.d("TODO", "write moveSavedItemToCart");
+        ShoppingCartView scv = (ShoppingCartView) _activityContext;
+        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv._dataProviders[1]; // PROBLEMS ARE HERE
+        final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = savedDP.removeGroupItem2(pos);
+        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) ((ShoppingCartTabContent) scv._adapter.getItem(0))._dataProvider;
+        cartDP. add(cartDP.getGroupCount()-1, item);
+
     }
 }

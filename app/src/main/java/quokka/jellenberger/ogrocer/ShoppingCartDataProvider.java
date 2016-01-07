@@ -123,6 +123,17 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
         mLastRemovedChildPosition = -1;
     }
 
+    public Pair<GroupData, List<ChildData>> removeGroupItem2(int groupPosition) {
+        mLastRemovedGroup = mData.remove(groupPosition);
+        mLastRemovedGroupPosition = groupPosition;
+
+        mLastRemovedChild = null;
+        mLastRemovedChildParentGroupId = -1;
+        mLastRemovedChildPosition = -1;
+        return mLastRemovedGroup;
+    }
+
+
     @Override
     public void removeChildItem(int groupPosition, int childPosition) {
         mLastRemovedChild = mData.get(groupPosition).second.remove(childPosition);
@@ -192,6 +203,10 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
         mLastRemovedChild = null;
 
         return RecyclerViewExpandableItemManager.getPackedPositionForChild(groupPosition, insertedPosition);
+    }
+
+    public void add(int toGroupPosition, Pair<GroupData, List<ChildData>> item){
+        mData.add(toGroupPosition, item);
     }
 
     public static final class ConcreteGroupData extends GroupData {
