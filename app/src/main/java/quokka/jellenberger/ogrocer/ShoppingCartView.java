@@ -12,6 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
@@ -245,6 +246,7 @@ public class ShoppingCartView extends AppCompatActivity
     }
 
     public AbstractExpandableDataProvider getDataProvider() {
+        //TODO: make this actually work?
         final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
         return ((ShoppingCartTabContent) fragment).getDataProvider();
     }
@@ -254,3 +256,5 @@ public class ShoppingCartView extends AppCompatActivity
     }
 
 }
+//TODO: app crashes when rapidly clicking buttons that move or remove recycler items
+//TODO: Update on swipe left group action to do what the plus button currently does

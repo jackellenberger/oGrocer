@@ -55,7 +55,7 @@ public class ShoppingCartTabContent extends Fragment
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
-    public AbstractExpandableDataProvider _dataProvider;
+    public ShoppingCartDataProvider _dataProvider;
     public MyExpandableDraggableSwipeableItemAdapter myItemAdapter;
 
     public static ShoppingCartTabContent newInstance(int position) {
@@ -94,9 +94,9 @@ public class ShoppingCartTabContent extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        _dataProvider = new ShoppingCartDataProvider();
+        _dataProvider = new ShoppingCartDataProvider(this);
         ShoppingCartView parent = (ShoppingCartView) getActivity();
-        parent.registerDataProvider(_currentTab, _dataProvider);
+        parent.registerDataProvider(0, _dataProvider);
 
         //noinspection ConstantConditions
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.shopping_cart_recycler);

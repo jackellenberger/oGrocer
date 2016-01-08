@@ -1,5 +1,6 @@
 package quokka.jellenberger.ogrocer;
 
+import android.support.v4.app.Fragment;
 import android.util.Pair;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
@@ -14,7 +15,7 @@ import java.util.List;
 
 public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     private List<Pair<GroupData, List<ChildData>>> mData;
-
+    public Fragment mOwnerFragment;
     // for undo group item
     private Pair<GroupData, List<ChildData>> mLastRemovedGroup;
     private int mLastRemovedGroupPosition = -1;
@@ -24,10 +25,10 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     private long mLastRemovedChildParentGroupId = -1;
     private int mLastRemovedChildPosition = -1;
 
-    public ShoppingCartDataProvider() {
+    public ShoppingCartDataProvider(Fragment ownerFragment) {
         final String groupItems[] = {"2% Milk","Dinner Rolls","Orange Juice","Potatoes"};
         final String childItems[] = {"Image","Quantity","Best Price","Stores","Recipes"};
-
+        mOwnerFragment = ownerFragment;
         mData = new LinkedList<>();
 
         for (int i = 0; i < groupItems.length; i++) {

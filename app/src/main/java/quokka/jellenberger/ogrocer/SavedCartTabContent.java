@@ -1,5 +1,6 @@
 package quokka.jellenberger.ogrocer;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -24,7 +25,9 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
+import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
+import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import java.util.List;
@@ -55,7 +58,7 @@ public class SavedCartTabContent extends Fragment
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
-    public AbstractExpandableDataProvider _dataProvider;
+    public ShoppingCartDataProvider _dataProvider;
 
     public static SavedCartTabContent newInstance(int position) {
         SavedCartTabContent f = new SavedCartTabContent();
@@ -93,9 +96,9 @@ public class SavedCartTabContent extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        _dataProvider = new ShoppingCartDataProvider();
+        _dataProvider = new ShoppingCartDataProvider(this);
         ShoppingCartView parent = (ShoppingCartView) getActivity();
-        parent.registerDataProvider(_currentTab, _dataProvider);
+        parent.registerDataProvider(1, _dataProvider);
 
         //noinspection ConstantConditions
         mRecyclerView = (RecyclerView) getView().findViewById(R.id.saved_cart_recycler);
@@ -321,12 +324,13 @@ public class SavedCartTabContent extends Fragment
     }
 
     public static void movedSavedItemToCart(int pos){
-        Log.d("TODO", "write moveSavedItemToCart");
         ShoppingCartView scv = (ShoppingCartView) _activityContext;
-        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv._dataProviders[1]; // PROBLEMS ARE HERE
+        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv._dataProviders[1];
         final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = savedDP.removeGroupItem2(pos);
-        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) ((ShoppingCartTabContent) scv._adapter.getItem(0))._dataProvider;
-        cartDP. add(cartDP.getGroupCount()-1, item);
+        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv._dataProviders[0];
+        cartDP.add(cartDP.getGroupCount(), item);
+        ((ShoppingCartTabContent) cartDP.mOwnerFragment).myItemAdapter.notifyItemInserted(cartDP.getGroupCount());
 
     }
+
 }

@@ -16,8 +16,10 @@
 
 package quokka.jellenberger.ogrocer;
 
+import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
+import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -204,8 +206,7 @@ class MyExpandableDraggableSwipeableItemAdapter
     }
 
     private void onSwipeableViewContainerClick(View v) {
-        Log.d("onSwipeableViewContainerClick", "child click disabled");
-        return;
+        return; //disable child click action
         /*
         if (mEventListener != null) {
             mEventListener.onItemViewClicked(RecyclerViewAdapterUtils.getParentViewHolderItemView(v), false);  // false --- not pinned
@@ -257,16 +258,6 @@ class MyExpandableDraggableSwipeableItemAdapter
                 @Override
                 public void onClick(View v) {
                     ShoppingCartTabContent.toggleCartItemChecked(v);
-                    //TODO: optimization: don't call getAdapterPosition more than once?
-                    //onMoveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
-                    /*
-                    ExpandablePositionTranslator pt = new ExpandablePositionTranslator();
-                    MyExpandableDraggableSwipeableItemAdapter thisAdapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
-                    //TODO: fuck this shit why won't it just animate like its supposed to.
-                    pt.build(thisAdapter,false);
-                    thisAdapter.onMoveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
-                    pt.moveGroupItem(RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition(), RecyclerViewAdapterUtils.getParentRecyclerView(v).getChildCount()-1);
-                    */
                 }
             });
         }
@@ -277,16 +268,36 @@ class MyExpandableDraggableSwipeableItemAdapter
             iv.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
-                    //((MyGroupViewHolder) RecyclerViewAdapterUtils.getViewHolder(v)).setSwipeItemHorizontalSlideAmount(-0.5f);
-                    //((MyGroupViewHolder) RecyclerViewAdapterUtils.getViewHolder(v)).onSlideAmountUpdated(-0.5f,0.0f,false);
+                    final MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
+                    MyGroupViewHolder holder = ((MyGroupViewHolder) RecyclerViewAdapterUtils.getViewHolder(v));
+                    final int pos = RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition();
 
-                    //TODO: make this slide out nicely. maybe check phyllo?
-                    Log.d("hey",String.valueOf(((MyGroupViewHolder) RecyclerViewAdapterUtils.getViewHolder(v)).getSwipeItemHorizontalSlideAmount()));
-                    int pos = RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition();
-                    GroupSwipeLeftResultAction slider = new GroupSwipeLeftResultAction(_adapter,pos);
-                    slider.onPerformAction();
-                    SavedCartTabContent.movedSavedItemToCart(pos);
+                    final int mShortAnimationDuration = v.getResources().getInteger(android.R.integer.config_shortAnimTime);
+
+                    Animator.AnimatorListener removerListener = new Animator.AnimatorListener() {
+                        @Override
+                        public void onAnimationStart(Animator animation) {}
+                        @Override
+                        public void onAnimationEnd(Animator animation) {
+                            new Handler().postDelayed(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    SavedCartTabContent.movedSavedItemToCart(pos);
+                                    _adapter.mExpandableItemManager.notifyGroupItemRemoved(pos);
+                                }
+                            }, mShortAnimationDuration);
+
+                        }
+                        @Override
+                        public void onAnimationCancel(Animator animation) {}
+                        @Override
+                        public void onAnimationRepeat(Animator animation) {}
+                    };
+                    holder.mContainer.animate().translationX(-holder.mContainer.getWidth())
+                            .setDuration(mShortAnimationDuration)
+                            .setListener(removerListener);
                 }
             });
         }
@@ -610,7 +621,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         mEventListener = eventListener;
     }
 
-    private static class GroupSwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection {
+    public static class GroupSwipeLeftResultAction extends SwipeResultActionMoveToSwipedDirection {
         private MyExpandableDraggableSwipeableItemAdapter mAdapter;
         private final int mGroupPosition;
         private boolean mSetPinned;
@@ -651,7 +662,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         }
     }
 
-    private static class GroupSwipeRightResultAction extends SwipeResultActionRemoveItem {
+    public static class GroupSwipeRightResultAction extends SwipeResultActionRemoveItem {
         private MyExpandableDraggableSwipeableItemAdapter mAdapter;
         private final int mGroupPosition;
 
