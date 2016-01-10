@@ -2,7 +2,6 @@ package quokka.jellenberger.ogrocer;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
@@ -32,21 +31,21 @@ public class ShoppingCartView extends AppCompatActivity
     private Toolbar _toolbar;
 
     //TABS
-    ViewPager _pager;
-    AdapterSlidingTab _adapter;
-    SlidingTabLayout _tabs;
+    ViewPager mViewPager;
+    AdapterSlidingTab mSlidingTabAdapter;
+    SlidingTabLayout mSlidingTabLayout;
     CharSequence _titles[] = {"Cart", "Saved"};
     int _numtabs = _titles.length;
 
-    AbstractExpandableDataProvider _dataProviders[] = {null,null};
+    AbstractExpandableDataProvider mDataProviders[] = {null,null};
 
 
     //DRAWER
-    DrawerLayout _DrawerLayout;
-    ActionBarDrawerToggle _DrawerToggle;
-    RecyclerView _DrawerRecycler;
-    RecyclerView.Adapter _DrawerRecyclerAdapter;
-    RecyclerView.LayoutManager _DrawerRecyclerLayout;
+    DrawerLayout mDrawerLayout;
+    ActionBarDrawerToggle mDrawerToggle;
+    RecyclerView mDrawerRecycler;
+    RecyclerView.Adapter mDrawerRecyclerAdapter;
+    RecyclerView.LayoutManager mDrawerRecyclerLayout;
     String _DrawerStrings[] = {"Cart","History","Recipes","Stores","My Contributions","Settings"};
     int _DrawerIcons[] = {R.drawable.ic_action_cart, R.drawable.ic_action_clock,R.drawable.ic_action_book,R.drawable.ic_action_location,R.drawable.ic_action_users,R.drawable.ic_action_settings};
 
@@ -65,29 +64,29 @@ public class ShoppingCartView extends AppCompatActivity
         //<< APPBAR
 
         //>> TABS
-        _adapter =  new AdapterSlidingTab(getSupportFragmentManager(),_titles,_numtabs);
-        _pager = (ViewPager) findViewById(R.id.cart_tab_pager);
-        _pager.setAdapter(_adapter);
-        _tabs = (SlidingTabLayout) findViewById(R.id.cart_tab_bar);
-        _tabs.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
-        _tabs.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
+        mSlidingTabAdapter =  new AdapterSlidingTab(getSupportFragmentManager(),_titles,_numtabs);
+        mViewPager = (ViewPager) findViewById(R.id.cart_tab_pager);
+        mViewPager.setAdapter(mSlidingTabAdapter);
+        mSlidingTabLayout = (SlidingTabLayout) findViewById(R.id.cart_tab_bar);
+        mSlidingTabLayout.setDistributeEvenly(true); // To make the Tabs Fixed set this true, This makes the tabs Space Evenly in Available width
+        mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
                 return getResources().getColor(R.color.accentColor);
             }
         });
-        _tabs.setViewPager(_pager);
+        mSlidingTabLayout.setViewPager(mViewPager);
         //<< TABS
 
         //>> NAVIGATION DRAWER
-        _DrawerRecycler = (RecyclerView) findViewById(R.id.left_RecyclerView);
-        _DrawerRecycler.setHasFixedSize(true);
-        _DrawerRecyclerAdapter = new AdapterNavigationDrawer(_DrawerStrings, _DrawerIcons);
-        _DrawerRecyclerLayout = new LinearLayoutManager(this);
-        _DrawerRecycler.setAdapter(_DrawerRecyclerAdapter);
-        _DrawerRecycler.setLayoutManager(_DrawerRecyclerLayout);
-        _DrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        _DrawerToggle = new ActionBarDrawerToggle(this,_DrawerLayout,_toolbar,R.string.drawer_open,R.string.drawer_close){
+        mDrawerRecycler = (RecyclerView) findViewById(R.id.left_RecyclerView);
+        mDrawerRecycler.setHasFixedSize(true);
+        mDrawerRecyclerAdapter = new AdapterNavigationDrawer(_DrawerStrings, _DrawerIcons);
+        mDrawerRecyclerLayout = new LinearLayoutManager(this);
+        mDrawerRecycler.setAdapter(mDrawerRecyclerAdapter);
+        mDrawerRecycler.setLayoutManager(mDrawerRecyclerLayout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,_toolbar,R.string.drawer_open,R.string.drawer_close){
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -106,11 +105,11 @@ public class ShoppingCartView extends AppCompatActivity
 
             }
         };
-        _DrawerLayout.setDrawerListener(_DrawerToggle);
-        _DrawerLayout.post(new Runnable() {
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        mDrawerLayout.post(new Runnable() {
             @Override
             public void run() {
-                _DrawerToggle.syncState();
+                mDrawerToggle.syncState();
             }
         });
         //<< NAVIGATION DRAWER
@@ -118,13 +117,14 @@ public class ShoppingCartView extends AppCompatActivity
     }
     public int getCurrentTab()
     {
-        return _pager.getCurrentItem();
+        return mViewPager.getCurrentItem();
     }
 
-    public void onGroupItemRemoved(int groupPosition) {
+    public void onGroupItemRemoved(int tabID, int groupPosition) {
+        String movedText = (tabID == 0) ? " saved for later" : " added to cart";
         Snackbar snackbar = Snackbar.make(
                 findViewById(R.id.container),
-                R.string.snack_bar_text_group_item_removed,
+                this.mDataProviders[tabID].getGroupItem(groupPosition).getText() + movedText,
                 Snackbar.LENGTH_LONG);
 
         snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
@@ -135,57 +135,6 @@ public class ShoppingCartView extends AppCompatActivity
         });
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
         snackbar.show();
-    }
-
-    /**
-     * This method will be called when a child item is removed
-     *
-     * @param groupPosition The group position of the child item within data set
-     * @param childPosition The position of the child item within the group
-     */
-    public void onChildItemRemoved(int groupPosition, int childPosition) {
-        Snackbar snackbar = Snackbar.make(
-                findViewById(R.id.container),
-                R.string.snack_bar_text_child_item_removed,
-                Snackbar.LENGTH_LONG);
-
-        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemUndoActionClicked();
-            }
-        });
-        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
-        snackbar.show();
-    }
-
-    /**
-     * This method will be called when a group item is pinned
-     *
-     * @param groupPosition The position of the group item within data set
-     */
-    public void onGroupItemPinned(int groupPosition) {
-        final DialogFragment dialog = ExpandableItemPinnedMessageDialogFragment.newInstance(groupPosition, RecyclerView.NO_POSITION);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(dialog, FRAGMENT_TAG_ITEM_PINNED_DIALOG)
-                .commit();
-    }
-
-    /**
-     * This method will be called when a child item is pinned
-     *
-     * @param groupPosition The group position of the child item within data set
-     * @param childPosition The position of the child item within the group
-     */
-    public void onChildItemPinned(int groupPosition, int childPosition) {
-        final DialogFragment dialog = ExpandableItemPinnedMessageDialogFragment.newInstance(groupPosition, childPosition);
-
-        getSupportFragmentManager()
-                .beginTransaction()
-                .add(dialog, FRAGMENT_TAG_ITEM_PINNED_DIALOG)
-                .commit();
     }
 
     public void onGroupItemClicked(int groupPosition) {
@@ -200,6 +149,8 @@ public class ShoppingCartView extends AppCompatActivity
     }
 
     public void onChildItemClicked(int groupPosition, int childPosition) {
+        Log.d("Child Item Clicked","I guess");
+        /*
         final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         AbstractExpandableDataProvider.ChildData data = getDataProvider().getChildItem(groupPosition, childPosition);
 
@@ -208,25 +159,21 @@ public class ShoppingCartView extends AppCompatActivity
             data.setPinned(false);
             ((ShoppingCartTabContent) fragment).notifyChildItemChanged(groupPosition, childPosition);
         }
+        */
     }
 
     private void onItemUndoActionClicked() {
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         final long result = getDataProvider().undoLastRemoval();
+        final int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(result);
 
         if (result == RecyclerViewExpandableItemManager.NO_EXPANDABLE_POSITION) {
             return;
         }
-
-        final int groupPosition = RecyclerViewExpandableItemManager.getPackedPositionGroup(result);
-        final int childPosition = RecyclerViewExpandableItemManager.getPackedPositionChild(result);
-
-        if (childPosition == RecyclerView.NO_POSITION) {
-            // group item
-            ((ShoppingCartTabContent) fragment).notifyGroupItemRestored(groupPosition);
-        } else {
-            // child item
-            ((ShoppingCartTabContent) fragment).notifyChildItemRestored(groupPosition, childPosition);
+        if (getCurrentTab() == 0) {
+            ((ShoppingCartTabContent)mSlidingTabAdapter.getItem(0)).notifyGroupItemRestored(groupPosition);
+        }
+        else{
+            ((SavedCartTabContent)mSlidingTabAdapter.getItem(1)).notifyGroupItemRestored(groupPosition);
         }
     }
 
@@ -246,15 +193,13 @@ public class ShoppingCartView extends AppCompatActivity
     }
 
     public AbstractExpandableDataProvider getDataProvider() {
-        //TODO: make this actually work?
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_TAG_DATA_PROVIDER);
-        return ((ShoppingCartTabContent) fragment).getDataProvider();
+        //TODO: this is hacky and will not work if the user is swiping between tabs real fast
+        return mDataProviders[getCurrentTab()];
     }
 
     public void registerDataProvider(int index, AbstractExpandableDataProvider dp){
-        _dataProviders[index] = dp;
+        mDataProviders[index] = dp;
     }
 
 }
 //TODO: app crashes when rapidly clicking buttons that move or remove recycler items
-//TODO: Update on swipe left group action to do what the plus button currently does

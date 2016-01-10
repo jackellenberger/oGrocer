@@ -574,11 +574,11 @@ class MyExpandableDraggableSwipeableItemAdapter
         Log.d(TAG, "onSwipeGroupItem(groupPosition = " + groupPosition + ", result = " + result + ")");
         if (holder.tabID == 0 && result == Swipeable.RESULT_SWIPED_RIGHT) { //shopping cart tab
             //return new GroupSwipeRightResultAction(this,groupPosition);
-            return new GroupSwipeOutResultAction(0,this,groupPosition);
+            return new SwipeItemToOtherTabResultAction(0,this,groupPosition);
         }
         else if (holder.tabID == 1 && result == Swipeable.RESULT_SWIPED_LEFT) {
             //return new GroupSwipeRightResultAction(this,groupPosition);
-            return new GroupSwipeOutResultAction(1,this,groupPosition);
+            return new SwipeItemToOtherTabResultAction(1,this,groupPosition);
 
         }
         return null;
@@ -698,12 +698,12 @@ class MyExpandableDraggableSwipeableItemAdapter
         }
     }
 
-    public static class GroupSwipeOutResultAction extends SwipeResultActionRemoveItem {
+    public static class SwipeItemToOtherTabResultAction extends SwipeResultActionRemoveItem {
         private MyExpandableDraggableSwipeableItemAdapter mAdapter;
         private final int mGroupPosition;
         private int mTabID;
 
-        GroupSwipeOutResultAction(int tabID, MyExpandableDraggableSwipeableItemAdapter adapter, int groupPosition) {
+        SwipeItemToOtherTabResultAction(int tabID, MyExpandableDraggableSwipeableItemAdapter adapter, int groupPosition) {
             mTabID = tabID;
             mAdapter = adapter;
             mGroupPosition = groupPosition;
@@ -712,6 +712,8 @@ class MyExpandableDraggableSwipeableItemAdapter
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
+            if (mAdapter.mEventListener != null)
+                mAdapter.mEventListener.onGroupItemRemoved(mGroupPosition);
             if (mTabID == 0)
                 ShoppingCartTabContent.moveCartItemToSaved(mGroupPosition);
             else
@@ -725,9 +727,7 @@ class MyExpandableDraggableSwipeableItemAdapter
         protected void onSlideAnimationEnd() {
             super.onSlideAnimationEnd();
 
-            if (mAdapter.mEventListener != null) {
-                mAdapter.mEventListener.onGroupItemRemoved(mGroupPosition);
-            }
+
         }
 
         @Override

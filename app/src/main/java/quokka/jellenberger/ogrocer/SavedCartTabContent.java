@@ -40,7 +40,6 @@ public class SavedCartTabContent extends Fragment
     private static final String FRAGMENT_TAG_ITEM_PINNED_DIALOG = "item pinned dialog";
     private static final String SAVED_STATE_EXPANDABLE_ITEM_MANAGER = "RecyclerViewExpandableItemManager";
 
-    public int _currentTab;
     public static int _tabID;
     static Context _activityContext;
     Drawable bulletIcon;
@@ -55,7 +54,7 @@ public class SavedCartTabContent extends Fragment
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
     public ShoppingCartDataProvider _dataProvider;
-    public MyExpandableDraggableSwipeableItemAdapter myItemAdapter;
+    public MyExpandableDraggableSwipeableItemAdapter mItemAdapter;
 
     public static SavedCartTabContent newInstance(int position) {
         SavedCartTabContent f = new SavedCartTabContent();
@@ -120,39 +119,28 @@ public class SavedCartTabContent extends Fragment
         mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        myItemAdapter =
-                new MyExpandableDraggableSwipeableItemAdapter(mRecyclerViewExpandableItemManager, _dataProvider);
+        mItemAdapter = new MyExpandableDraggableSwipeableItemAdapter(mRecyclerViewExpandableItemManager, _dataProvider);
 
-        myItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {
+        mItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {
             @Override
             public void onGroupItemRemoved(int groupPosition) {
-                ((ShoppingCartView) getActivity()).onGroupItemRemoved(groupPosition);
+                ((ShoppingCartView) getActivity()).onGroupItemRemoved(_tabID,groupPosition);
             }
 
             @Override
-            public void onChildItemRemoved(int groupPosition, int childPosition) {
-                ( (ShoppingCartView) getActivity()).onChildItemRemoved(groupPosition, childPosition);
-            }
+            public void onChildItemRemoved(int groupPosition, int childPosition) {}
+            @Override
+            public void onGroupItemPinned(int groupPosition) {}
+            @Override
+            public void onChildItemPinned(int groupPosition, int childPosition) {}
 
             @Override
-            public void onGroupItemPinned(int groupPosition) {
-                ( (ShoppingCartView) getActivity()).onGroupItemPinned(groupPosition);
-            }
-
-            @Override
-            public void onChildItemPinned(int groupPosition, int childPosition) {
-                ( (ShoppingCartView) getActivity()).onChildItemPinned(groupPosition, childPosition);
-            }
-
-            @Override
-            public void onItemViewClicked(View v, boolean pinned) {
-                onItemViewClick(v, pinned);
-            }
+            public void onItemViewClicked(View v, boolean pinned) {}
         });
 
-        mAdapter = myItemAdapter;
+        mAdapter = mItemAdapter;
 
-        mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(myItemAdapter);       // wrap for expanding
+        mWrappedAdapter = mRecyclerViewExpandableItemManager.createWrappedAdapter(mItemAdapter);       // wrap for expanding
         mWrappedAdapter = mRecyclerViewDragDropManager.createWrappedAdapter(mWrappedAdapter);           // wrap for dragging
         mWrappedAdapter = mRecyclerViewSwipeManager.createWrappedAdapter(mWrappedAdapter);      // wrap for swiping
 
@@ -322,11 +310,11 @@ public class SavedCartTabContent extends Fragment
 
     public static void movedSavedItemToCart(int pos){
         ShoppingCartView scv = (ShoppingCartView) _activityContext;
-        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv._dataProviders[1];
+        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
         final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = savedDP.removeGroupItem2(pos);
-        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv._dataProviders[0];
+        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv.mDataProviders[0];
         cartDP.add(cartDP.getGroupCount(), item);
-        ((ShoppingCartTabContent) cartDP.mOwnerFragment).myItemAdapter.notifyItemInserted(cartDP.getGroupCount());
+        ((ShoppingCartTabContent) cartDP.mOwnerFragment).mItemAdapter.notifyItemInserted(cartDP.getGroupCount());
     }
 
 }
