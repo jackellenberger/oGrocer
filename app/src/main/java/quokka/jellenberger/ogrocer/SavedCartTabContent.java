@@ -1,6 +1,5 @@
 package quokka.jellenberger.ogrocer;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -12,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,9 +23,7 @@ import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDec
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
-import com.h6ah4i.android.widget.advrecyclerview.swipeable.action.SwipeResultActionRemoveItem;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
-import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
 import java.util.List;
@@ -59,6 +55,7 @@ public class SavedCartTabContent extends Fragment
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
 
     public ShoppingCartDataProvider _dataProvider;
+    public MyExpandableDraggableSwipeableItemAdapter myItemAdapter;
 
     public static SavedCartTabContent newInstance(int position) {
         SavedCartTabContent f = new SavedCartTabContent();
@@ -123,7 +120,7 @@ public class SavedCartTabContent extends Fragment
         mRecyclerViewSwipeManager = new RecyclerViewSwipeManager();
 
         //adapter
-        final MyExpandableDraggableSwipeableItemAdapter myItemAdapter =
+        myItemAdapter =
                 new MyExpandableDraggableSwipeableItemAdapter(mRecyclerViewExpandableItemManager, _dataProvider);
 
         myItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {
@@ -330,7 +327,6 @@ public class SavedCartTabContent extends Fragment
         ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv._dataProviders[0];
         cartDP.add(cartDP.getGroupCount(), item);
         ((ShoppingCartTabContent) cartDP.mOwnerFragment).myItemAdapter.notifyItemInserted(cartDP.getGroupCount());
-
     }
 
 }

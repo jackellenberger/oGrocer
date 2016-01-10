@@ -13,6 +13,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,6 +30,8 @@ import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeMana
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 
+import java.util.List;
+
 /**
  * Created by jellenberger on 12/15/15.
  */
@@ -43,7 +46,7 @@ public class ShoppingCartTabContent extends Fragment
 
     public int _currentTab;
     public static int _tabID;
-    Context _activityContext;
+    static Context _activityContext;
     Drawable bulletIcon;
 
     private RecyclerView mRecyclerView;
@@ -336,6 +339,13 @@ public class ShoppingCartTabContent extends Fragment
             tv.setPaintFlags(tv.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
             tv.setTextColor(ContextCompat.getColor(v.getContext(), R.color.primaryText));
         }
-
+    }
+    public static void moveCartItemToSaved(int pos){
+        ShoppingCartView scv = (ShoppingCartView) _activityContext;
+        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv._dataProviders[0];
+        final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = cartDP.removeGroupItem2(pos);
+        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv._dataProviders[1];
+        savedDP.add(savedDP.getGroupCount(), item);
+        ((SavedCartTabContent) savedDP.mOwnerFragment).myItemAdapter.notifyItemInserted(savedDP.getGroupCount());
     }
 }

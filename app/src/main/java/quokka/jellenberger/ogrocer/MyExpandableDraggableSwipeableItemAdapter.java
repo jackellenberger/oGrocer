@@ -21,7 +21,6 @@ import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.support.v4.view.ViewCompat;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -574,13 +573,15 @@ class MyExpandableDraggableSwipeableItemAdapter
         //TODO: after dragging an item, swiping from one tab to another on the recycler is funky.
         Log.d(TAG, "onSwipeGroupItem(groupPosition = " + groupPosition + ", result = " + result + ")");
         if (holder.tabID == 0 && result == Swipeable.RESULT_SWIPED_RIGHT) { //shopping cart tab
-            return new GroupSwipeRightResultAction(this,groupPosition);
+            //return new GroupSwipeRightResultAction(this,groupPosition);
+            return new GroupSwipeOutResultAction(0,this,groupPosition);
         }
         else if (holder.tabID == 1 && result == Swipeable.RESULT_SWIPED_LEFT) {
-            return new GroupSwipeRightResultAction(this,groupPosition);
+            //return new GroupSwipeRightResultAction(this,groupPosition);
+            return new GroupSwipeOutResultAction(1,this,groupPosition);
+
         }
-        else
-            return null;
+        return null;
     }
 
     @Override
@@ -674,9 +675,50 @@ class MyExpandableDraggableSwipeableItemAdapter
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
-
+            //ShoppingCartTabContent.moveCartItemToSaved(mGroupPosition);
+            //mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
             mAdapter.mProvider.removeGroupItem(mGroupPosition);
             mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
+        }
+
+        @Override
+        protected void onSlideAnimationEnd() {
+            super.onSlideAnimationEnd();
+
+            if (mAdapter.mEventListener != null) {
+                mAdapter.mEventListener.onGroupItemRemoved(mGroupPosition);
+            }
+        }
+
+        @Override
+        protected void onCleanUp() {
+            super.onCleanUp();
+            // clear the references
+            mAdapter = null;
+        }
+    }
+
+    public static class GroupSwipeOutResultAction extends SwipeResultActionRemoveItem {
+        private MyExpandableDraggableSwipeableItemAdapter mAdapter;
+        private final int mGroupPosition;
+        private int mTabID;
+
+        GroupSwipeOutResultAction(int tabID, MyExpandableDraggableSwipeableItemAdapter adapter, int groupPosition) {
+            mTabID = tabID;
+            mAdapter = adapter;
+            mGroupPosition = groupPosition;
+        }
+
+        @Override
+        protected void onPerformAction() {
+            super.onPerformAction();
+            if (mTabID == 0)
+                ShoppingCartTabContent.moveCartItemToSaved(mGroupPosition);
+            else
+                SavedCartTabContent.movedSavedItemToCart(mGroupPosition);
+            mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
+            //mAdapter.mProvider.removeGroupItem(mGroupPosition);
+            //mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
         }
 
         @Override
