@@ -16,10 +16,8 @@
 
 package quokka.jellenberger.ogrocer;
 
-import android.animation.Animator;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -248,7 +246,7 @@ class MyExpandableDraggableSwipeableItemAdapter
     public MyGroupViewHolder onCreateGroupViewHolder(ViewGroup parent, int viewType) {
         final LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         final View v;
-        int tabID = (parent.findViewById(R.id.shopping_cart_recycler) != null) ? 0 : 1;
+        final int tabID = (parent.findViewById(R.id.shopping_cart_recycler) != null) ? 0 : 1;
         if (tabID == 0) {
             v = inflater.inflate(R.layout.shopping_cart_recycler_item, parent, false);
             CheckBox cb = (CheckBox) v.findViewById(R.id.cart_checkbox);
@@ -272,7 +270,18 @@ class MyExpandableDraggableSwipeableItemAdapter
                     final int pos = RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition();
 
                     final int mShortAnimationDuration = v.getResources().getInteger(android.R.integer.config_shortAnimTime);
+                    holder.mContainer.animate().translationX(-holder.mContainer.getWidth())
+                            .setDuration(mShortAnimationDuration)
+                            .withEndAction(new Runnable() {
+                                @Override
+                                public void run() {
+                                    SwipeItemToOtherTabResultAction remover = new SwipeItemToOtherTabResultAction(1,_adapter,pos);
+                                    remover.onPerformAction();
+                                }
+                            });
 
+                    /*
+                    final int mShortAnimationDuration = v.getResources().getInteger(android.R.integer.config_shortAnimTime);
                     Animator.AnimatorListener removerListener = new Animator.AnimatorListener() {
                         @Override
                         public void onAnimationStart(Animator animation) {}
@@ -294,9 +303,11 @@ class MyExpandableDraggableSwipeableItemAdapter
                         @Override
                         public void onAnimationRepeat(Animator animation) {}
                     };
+
                     holder.mContainer.animate().translationX(-holder.mContainer.getWidth())
                             .setDuration(mShortAnimationDuration)
-                            .setListener(removerListener);
+                            .setListener(removerListener);*/
+
                 }
             });
         }
@@ -306,7 +317,9 @@ class MyExpandableDraggableSwipeableItemAdapter
             @Override
             public void onClick(View v) {
                 MyExpandableDraggableSwipeableItemAdapter _adapter = (MyExpandableDraggableSwipeableItemAdapter) v.getTag();
-                GroupSwipeRightResultAction remover = new GroupSwipeRightResultAction(_adapter,RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition());
+                int pos = RecyclerViewAdapterUtils.getViewHolder(v).getAdapterPosition();
+                ((ShoppingCartView) v.getContext()).onGroupItemDeleted(tabID, pos);
+                GroupDeleteResultAction remover = new GroupDeleteResultAction(_adapter,pos);
                 remover.onPerformAction();
             }
         });
@@ -573,11 +586,11 @@ class MyExpandableDraggableSwipeableItemAdapter
         //TODO: after dragging an item, swiping from one tab to another on the recycler is funky.
         Log.d(TAG, "onSwipeGroupItem(groupPosition = " + groupPosition + ", result = " + result + ")");
         if (holder.tabID == 0 && result == Swipeable.RESULT_SWIPED_RIGHT) { //shopping cart tab
-            //return new GroupSwipeRightResultAction(this,groupPosition);
+            //return new GroupDeleteResultAction(this,groupPosition);
             return new SwipeItemToOtherTabResultAction(0,this,groupPosition);
         }
         else if (holder.tabID == 1 && result == Swipeable.RESULT_SWIPED_LEFT) {
-            //return new GroupSwipeRightResultAction(this,groupPosition);
+            //return new GroupDeleteResultAction(this,groupPosition);
             return new SwipeItemToOtherTabResultAction(1,this,groupPosition);
 
         }
@@ -663,11 +676,11 @@ class MyExpandableDraggableSwipeableItemAdapter
         }
     }
 
-    public static class GroupSwipeRightResultAction extends SwipeResultActionRemoveItem {
+    public static class GroupDeleteResultAction extends SwipeResultActionRemoveItem {
         private MyExpandableDraggableSwipeableItemAdapter mAdapter;
         private final int mGroupPosition;
 
-        GroupSwipeRightResultAction(MyExpandableDraggableSwipeableItemAdapter adapter, int groupPosition) {
+        GroupDeleteResultAction(MyExpandableDraggableSwipeableItemAdapter adapter, int groupPosition) {
             mAdapter = adapter;
             mGroupPosition = groupPosition;
         }
@@ -675,8 +688,6 @@ class MyExpandableDraggableSwipeableItemAdapter
         @Override
         protected void onPerformAction() {
             super.onPerformAction();
-            //ShoppingCartTabContent.moveCartItemToSaved(mGroupPosition);
-            //mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
             mAdapter.mProvider.removeGroupItem(mGroupPosition);
             mAdapter.mExpandableItemManager.notifyGroupItemRemoved(mGroupPosition);
         }

@@ -120,19 +120,36 @@ public class ShoppingCartView extends AppCompatActivity
         return mViewPager.getCurrentItem();
     }
 
-    public void onGroupItemRemoved(int tabID, int groupPosition) {
+    public void onGroupItemSwipedOut(int tabID, int groupPosition) {
         String movedText = (tabID == 0) ? " saved for later" : " added to cart";
         Snackbar snackbar = Snackbar.make(
                 findViewById(R.id.container),
                 this.mDataProviders[tabID].getGroupItem(groupPosition).getText() + movedText,
                 Snackbar.LENGTH_LONG);
-
+        /* undo is more work than its worth
         snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 onItemUndoActionClicked();
             }
         });
+        */
+        snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
+        snackbar.show();
+    }
+    public void onGroupItemDeleted(int tabID, int groupPosition) {
+        Snackbar snackbar = Snackbar.make(
+                findViewById(R.id.container),
+                this.mDataProviders[tabID].getGroupItem(groupPosition).getText() + " deleted",
+                Snackbar.LENGTH_LONG);
+        /* undo is more work than its worth
+        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemUndoActionClicked();
+            }
+        });
+        */
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
         snackbar.show();
     }
@@ -149,7 +166,7 @@ public class ShoppingCartView extends AppCompatActivity
     }
 
     public void onChildItemClicked(int groupPosition, int childPosition) {
-        Log.d("Child Item Clicked","I guess");
+        Log.d("Child Item Clicked", "I guess");
         /*
         final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
         AbstractExpandableDataProvider.ChildData data = getDataProvider().getChildItem(groupPosition, childPosition);

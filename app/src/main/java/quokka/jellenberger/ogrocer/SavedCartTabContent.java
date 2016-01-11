@@ -124,7 +124,7 @@ public class SavedCartTabContent extends Fragment
         mItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {
             @Override
             public void onGroupItemRemoved(int groupPosition) {
-                ((ShoppingCartView) getActivity()).onGroupItemRemoved(_tabID,groupPosition);
+                ((ShoppingCartView) getActivity()).onGroupItemSwipedOut(_tabID, groupPosition);
             }
 
             @Override

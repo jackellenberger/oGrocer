@@ -128,7 +128,7 @@ public class ShoppingCartTabContent extends Fragment
         mItemAdapter.setEventListener(new MyExpandableDraggableSwipeableItemAdapter.EventListener() {
             @Override
             public void onGroupItemRemoved(int groupPosition) {
-                ((ShoppingCartView) getActivity()).onGroupItemRemoved(_tabID, groupPosition);
+                ((ShoppingCartView) getActivity()).onGroupItemSwipedOut(_tabID, groupPosition);
             }
 
             @Override
@@ -282,7 +282,8 @@ public class ShoppingCartTabContent extends Fragment
 
 
     public void notifyGroupItemRestored(int groupPosition) {
-        mAdapter.notifyDataSetChanged();
+        //TODO: broken - null pointers everywhere
+        mItemAdapter.notifyDataSetChanged();
 
         final long expandablePosition = RecyclerViewExpandableItemManager.getPackedPositionForGroup(groupPosition);
         final int flatPosition = mRecyclerViewExpandableItemManager.getFlatPosition(expandablePosition);
