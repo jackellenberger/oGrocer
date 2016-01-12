@@ -19,7 +19,9 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -107,43 +109,53 @@ public class ShoppingCartTabContent extends Fragment
         }
         mSearchBox.setLogoText("Add an item");
         mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
-        mSearchBox.setDrawerLogoTint(R.color.primaryColor);
-        mSearchBox.setLogoTextColor(R.color.accentColor);
+        //mSearchBox.setDrawerLogoTint(R.color.primaryColor);
+        //mSearchBox.setLogoTextColor(R.color.accentColor);
         mSearchBox.setAnimateDrawerLogo(false);
 
         //what does the hamburger/menu button do?
-        mSearchBox.setMenuListener(new SearchBox.MenuListener(){
+        mSearchBox.setMenuListener(new SearchBox.MenuListener() {
             @Override
             public void onMenuClick() {
                 //Hamburger has been clicked
                 Toast.makeText(_activityContext, "Menu click", Toast.LENGTH_LONG).show();
             }
         });
+
         mSearchBox.setSearchListener(new SearchBox.SearchListener(){
             @Override
             public void onSearchOpened() {
                 //Use this to tint the screen
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchClosed() {
                 //Use this to un-tint the screen
+                Log.d("onSearchClosed","called");
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchTermChanged(String term) {
                 //React to the search term changing
                 //Called after it has updated results
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearch(String searchTerm) {
                 Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onResultClick(SearchResult result) {
                 //React to a result being clicked
+                Log.d("onResultClick","called");
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchCleared() {
                 //Called when the clear button is clicked
+                Log.d("onSearchCleared","called");
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
         });
 
@@ -159,6 +171,7 @@ public class ShoppingCartTabContent extends Fragment
                     .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             mSearchBox.populateEditText(matches.get(0));
         }
+        ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
         super.onActivityResult(requestCode, resultCode, data);
     }
 
