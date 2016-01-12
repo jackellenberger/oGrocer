@@ -1,23 +1,27 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
@@ -28,7 +32,10 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandab
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
 import com.h6ah4i.android.widget.advrecyclerview.touchguard.RecyclerViewTouchActionGuardManager;
 import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
+import com.quinny898.library.persistentsearch.SearchBox;
+import com.quinny898.library.persistentsearch.SearchResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,6 +63,7 @@ public class ShoppingCartTabContent extends Fragment
     private RecyclerViewDragDropManager mRecyclerViewDragDropManager;
     private RecyclerViewSwipeManager mRecyclerViewSwipeManager;
     private RecyclerViewTouchActionGuardManager mRecyclerViewTouchActionGuardManager;
+    SearchBox mSearchBox;
 
     public ShoppingCartDataProvider _dataProvider;
     public MyExpandableDraggableSwipeableItemAdapter mItemAdapter;
@@ -89,8 +97,69 @@ public class ShoppingCartTabContent extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
+        //TODO: search box doesn't do anything, breaks when you click it twice.
+        mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
+        //mSearchBox.enableVoiceRecognition(this);
+        // move the following code to wherever we interface with the local foods db
+        for(int x = 0; x < 10; x++){
+            SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_action_clock));
+            mSearchBox.addSearchable(option);
+        }
+        mSearchBox.setLogoText("Add an item");
+        mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
+        mSearchBox.setDrawerLogoTint(R.color.primaryColor);
+        mSearchBox.setLogoTextColor(R.color.accentColor);
+        mSearchBox.setAnimateDrawerLogo(false);
+
+        //what does the hamburger/menu button do?
+        mSearchBox.setMenuListener(new SearchBox.MenuListener(){
+            @Override
+            public void onMenuClick() {
+                //Hamburger has been clicked
+                Toast.makeText(_activityContext, "Menu click", Toast.LENGTH_LONG).show();
+            }
+        });
+        mSearchBox.setSearchListener(new SearchBox.SearchListener(){
+            @Override
+            public void onSearchOpened() {
+                //Use this to tint the screen
+            }
+            @Override
+            public void onSearchClosed() {
+                //Use this to un-tint the screen
+            }
+            @Override
+            public void onSearchTermChanged(String term) {
+                //React to the search term changing
+                //Called after it has updated results
+            }
+            @Override
+            public void onSearch(String searchTerm) {
+                Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
+            }
+            @Override
+            public void onResultClick(SearchResult result) {
+                //React to a result being clicked
+            }
+            @Override
+            public void onSearchCleared() {
+                //Called when the clear button is clicked
+            }
+        });
+
         _tabID = getTabID();
         return contentView;
+    }
+    //Something for the search/add box. not sure what it does...
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.d("onActivityResult","what does this do");
+        if (isAdded() && requestCode == SearchBox.VOICE_RECOGNITION_CODE && resultCode == getActivity().RESULT_OK) {
+            ArrayList<String> matches = data
+                    .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            mSearchBox.populateEditText(matches.get(0));
+        }
+        super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
