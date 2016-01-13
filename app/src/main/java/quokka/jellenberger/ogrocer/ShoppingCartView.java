@@ -16,6 +16,10 @@ import android.view.View;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 
+import java.sql.SQLException;
+import java.util.Arrays;
+import java.util.List;
+
 /**
  * Created by jellenberger on 12/15/15.
  */
@@ -26,6 +30,9 @@ public class ShoppingCartView extends AppCompatActivity
     private static final String FRAGMENT_LIST_VIEW = "list view";
     private static final String FRAGMENT_TAG_ITEM_PINNED_DIALOG = "item pinned dialog";
 
+
+    //Local item database
+    public ItemDatabase mItemDB;
 
     //APP BAR
     private Toolbar _toolbar;
@@ -55,6 +62,16 @@ public class ShoppingCartView extends AppCompatActivity
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.shopping_cart_view_layout);
+
+        //>> ITEM DATABASE
+        mItemDB = new ItemDatabase(this);
+        try {
+            mItemDB.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        mItemDB.addItem(new ItemInfo((long)1,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
+        //<< ITEM DATABASE
 
         //>> APPBAR
         _toolbar = (Toolbar) findViewById(R.id.app_bar);

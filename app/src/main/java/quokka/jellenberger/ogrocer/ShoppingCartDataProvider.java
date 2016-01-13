@@ -38,14 +38,6 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
             final List<ChildData> children = new ArrayList<>();
 
             children.add(new ConcreteChildData(groupId,groupItems[i]));
-            /*
-            for (int j = 0; j < childItems.length; j++) {
-                final long childId = group.generateNewChildId();
-                final String childText = childItems[j];
-                children.add(new ConcreteChildData(childId, childText));
-            }
-            */
-
             mData.add(new Pair<GroupData, List<ChildData>>(group, children));
         }
     }

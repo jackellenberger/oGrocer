@@ -28,5 +28,5 @@ dependencies {
     }
     compile 'com.android.support:design:23.0.0'
     //compile 'com.quinny898.library.persistentsearch:library:1.1.0-SNAPSHOT' //google search bar
-    compile 'com.github.jackellenberger:PersistentSearch:-SNAPSHOT'
+    compile 'com.github.jackellenberger:PersistentSearch:47079da9f1'
 }

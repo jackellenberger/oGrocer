@@ -2,6 +2,7 @@ package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -99,22 +100,18 @@ public class ShoppingCartTabContent extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View contentView = inflater.inflate(R.layout.shopping_cart_frag_layout, container, false);
-        //TODO: search box doesn't do anything, breaks when you click it twice.
+
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
-        //mSearchBox.enableVoiceRecognition(this);
+        mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
         for(int x = 0; x < 10; x++){
             SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
-        mSearchBox.setLogoText("Add an item");
-        mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
-        //mSearchBox.setDrawerLogoTint(R.color.primaryColor);
-        //mSearchBox.setLogoTextColor(R.color.accentColor);
-        mSearchBox.setAnimateDrawerLogo(false);
+        mSearchBox.setLogoText("Save for later");
+        //mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
 
-        //what does the hamburger/menu button do?
-        mSearchBox.setMenuListener(new SearchBox.MenuListener() {
+        mSearchBox.setMenuListener(new SearchBox.MenuListener(){
             @Override
             public void onMenuClick() {
                 //Hamburger has been clicked
@@ -131,7 +128,6 @@ public class ShoppingCartTabContent extends Fragment
             @Override
             public void onSearchClosed() {
                 //Use this to un-tint the screen
-                Log.d("onSearchClosed","called");
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
@@ -142,23 +138,21 @@ public class ShoppingCartTabContent extends Fragment
             }
             @Override
             public void onSearch(String searchTerm) {
-                Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
+                Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
+
             }
             @Override
             public void onResultClick(SearchResult result) {
                 //React to a result being clicked
-                Log.d("onResultClick","called");
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchCleared() {
                 //Called when the clear button is clicked
-                Log.d("onSearchCleared","called");
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
         });
-
         _tabID = getTabID();
         return contentView;
     }
@@ -171,7 +165,7 @@ public class ShoppingCartTabContent extends Fragment
                     .getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
             mSearchBox.populateEditText(matches.get(0));
         }
-        ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
+        //((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
         super.onActivityResult(requestCode, resultCode, data);
     }
 

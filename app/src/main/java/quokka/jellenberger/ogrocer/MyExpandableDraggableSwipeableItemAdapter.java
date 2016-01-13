@@ -17,6 +17,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
@@ -115,7 +116,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
     public static class MyGroupViewHolder extends AbstractDraggableSwipeableItemViewHolder implements ExpandableItemViewHolder {
         public FrameLayout mContainer;
-        public View mDragHandle, mCheckBox, mDeleteItem;
+        public View mDragHandle, mCheckBox, mDeleteItem, mView;
         public TextView mTextView;
         private int mExpandStateFlags;
         public int tabID;
@@ -123,6 +124,7 @@ class MyExpandableDraggableSwipeableItemAdapter
 
         public MyGroupViewHolder(View v, int tabID){
             super(v);
+            mView = v;
             mContainer = (FrameLayout) v.findViewById(R.id.container);
             mDragHandle = v.findViewById(R.id.drag_handle);
             mCheckBox = v.findViewById(R.id.cart_checkbox);
@@ -279,35 +281,6 @@ class MyExpandableDraggableSwipeableItemAdapter
                                     remover.onPerformAction();
                                 }
                             });
-
-                    /*
-                    final int mShortAnimationDuration = v.getResources().getInteger(android.R.integer.config_shortAnimTime);
-                    Animator.AnimatorListener removerListener = new Animator.AnimatorListener() {
-                        @Override
-                        public void onAnimationStart(Animator animation) {}
-                        @Override
-                        public void onAnimationEnd(Animator animation) {
-                            new Handler().postDelayed(new Runnable()
-                            {
-                                @Override
-                                public void run()
-                                {
-                                    SavedCartTabContent.movedSavedItemToCart(pos);
-                                    _adapter.mExpandableItemManager.notifyGroupItemRemoved(pos);
-                                }
-                            }, mShortAnimationDuration);
-
-                        }
-                        @Override
-                        public void onAnimationCancel(Animator animation) {}
-                        @Override
-                        public void onAnimationRepeat(Animator animation) {}
-                    };
-
-                    holder.mContainer.animate().translationX(-holder.mContainer.getWidth())
-                            .setDuration(mShortAnimationDuration)
-                            .setListener(removerListener);*/
-
                 }
             });
         }
@@ -344,105 +317,12 @@ class MyExpandableDraggableSwipeableItemAdapter
 
         // set text
         holder.mTextView.setText(item.getText());
-
-        // set background resource (target view ID: container)
-        final int dragState = holder.getDragStateFlags();
-        final int expandState = holder.getExpandStateFlags();
-        final int swipeState = holder.getSwipeStateFlags();
-        /*
-        if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0) ||
-                ((expandState & Expandable.STATE_FLAG_IS_UPDATED) != 0) ||
-                ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
-            int bgResId;
-            boolean isExpanded;
-            //boolean animateIndicator = ((expandState & Expandable.STATE_FLAG_HAS_EXPANDED_STATE_CHANGED) != 0);
-
-            if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0) {
-                bgResId = R.drawable.bg_group_item_dragging_active_state;
-
-                // need to clear drawable state here to get correct appearance of the dragging item.
-                clearState(holder.mContainer.getForeground());
-            } else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0) {
-                bgResId = R.drawable.bg_group_item_dragging_state;
-            } else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0) {
-                bgResId = R.drawable.bg_group_item_swiping_active_state;
-            } else if ((swipeState & Swipeable.STATE_FLAG_SWIPING) != 0) {
-                bgResId = R.drawable.bg_group_item_swiping_state;
-            } else if ((expandState & Expandable.STATE_FLAG_IS_EXPANDED) != 0) {
-                bgResId = R.drawable.bg_group_item_expanded_state;
-            } else {
-                bgResId = R.drawable.bg_group_item_normal_state;
-            }
-
-            if ((expandState & Expandable.STATE_FLAG_IS_EXPANDED) != 0) {
-                isExpanded = true;
-            } else {
-                isExpanded = false;
-            }
-
-            holder.mContainer.setBackgroundResource(bgResId);
-            //holder.mIndicator.setExpandedState(isExpanded, animateIndicator);
-        }
-        */
-        // set swiping properties
-        holder.setSwipeItemHorizontalSlideAmount(
-                item.isPinned() ? Swipeable.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
-
     }
 
     @Override
     public void onBindChildViewHolder(MyChildViewHolder holder, int groupPosition, int childPosition, int viewType) {
         holder.setCurrentGroup(groupPosition);
-        // child item
-        final AbstractExpandableDataProvider.ChildData item = mProvider.getChildItem(groupPosition, childPosition);
 
-        /*
-        // set listeners
-        // (if the item is *not pinned*, click event comes to the itemView)
-        holder.itemView.setOnClickListener(mItemViewOnClickListener);
-        // (if the item is *pinned*, click event comes to the mContainer)
-        holder.mContainer.setOnClickListener(mSwipeableViewContainerOnClickListener);
-
-        // set text
-        holder.mTextView.setText(item.getText());
-        */
-        /* //DISABLE BLUE OVERLAY WHEN CHILDVIEW IS SWIPED
-        final int dragState = holder.getDragStateFlags();
-        final int swipeState = holder.getSwipeStateFlags();
-
-        if (((dragState & Draggable.STATE_FLAG_IS_UPDATED) != 0) || ((swipeState & Swipeable.STATE_FLAG_IS_UPDATED) != 0)) {
-            int bgResId;
-
-            if ((dragState & Draggable.STATE_FLAG_IS_ACTIVE) != 0)
-            {
-                bgResId = R.drawable.bg_item_dragging_active_state;
-                // need to clear drawable state here to get correct appearance of the dragging item.
-                clearState(holder.mContainer.getForeground());
-            }
-            else if ((dragState & Draggable.STATE_FLAG_DRAGGING) != 0)
-            {
-                bgResId = R.drawable.bg_item_dragging_state;
-            }
-            else if ((swipeState & Swipeable.STATE_FLAG_IS_ACTIVE) != 0)
-            {
-                bgResId = R.drawable.bg_item_swiping_active_state;
-            }
-            else if ((swipeState & Swipeable.STATE_FLAG_SWIPING) != 0)
-            {
-                bgResId = R.drawable.bg_item_swiping_state;
-            }
-            else
-            {
-                bgResId = R.drawable.bg_item_normal_state;
-            }
-
-            holder.mContainer.setBackgroundResource(bgResId);
-        }
-
-        // set swiping properties
-        holder.setSwipeItemHorizontalSlideAmount(
-                item.isPinned() ? Swipeable.OUTSIDE_OF_THE_WINDOW_LEFT : 0);
-        */
     }
 
     @Override
@@ -557,9 +437,8 @@ class MyExpandableDraggableSwipeableItemAdapter
                 break;
         }
         TextDrawable td = new TextDrawable(holder.holderContext,holder.tabID);
-        //holder.itemView.setBackgroundResource(R.);
-        holder.itemView.setBackgroundColor(holder.holderContext.getResources().getColor(R.color.grey100));
-        holder.itemView.setBackground(td);
+        holder.mView.setBackgroundColor(holder.holderContext.getResources().getColor(R.color.grey100));
+        holder.mView.setBackground(td);
     }
 
     @Override

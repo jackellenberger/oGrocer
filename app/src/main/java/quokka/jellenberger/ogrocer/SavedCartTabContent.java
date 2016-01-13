@@ -15,6 +15,8 @@ import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
@@ -89,20 +91,17 @@ public class SavedCartTabContent extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
     {
         final View contentView = inflater.inflate(R.layout.saved_cart_frag_layout, container, false);
+
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
-        //mSearchBox.enableVoiceRecognition(this);
+        mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
         for(int x = 0; x < 10; x++){
             SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
         mSearchBox.setLogoText("Save for later");
-        mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
-        mSearchBox.setDrawerLogoTint(R.color.primaryColor);
-        mSearchBox.setLogoTextColor(R.color.accentColor);
-        mSearchBox.setAnimateDrawerLogo(false);
+        //mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
 
-        //what does the hamburger/menu button do?
         mSearchBox.setMenuListener(new SearchBox.MenuListener(){
             @Override
             public void onMenuClick() {
@@ -110,31 +109,38 @@ public class SavedCartTabContent extends Fragment
                 Toast.makeText(_activityContext, "Menu click", Toast.LENGTH_LONG).show();
             }
         });
+
         mSearchBox.setSearchListener(new SearchBox.SearchListener(){
             @Override
             public void onSearchOpened() {
                 //Use this to tint the screen
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchClosed() {
                 //Use this to un-tint the screen
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchTermChanged(String term) {
                 //React to the search term changing
                 //Called after it has updated results
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearch(String searchTerm) {
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
                 Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onResultClick(SearchResult result) {
                 //React to a result being clicked
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
             @Override
             public void onSearchCleared() {
                 //Called when the clear button is clicked
+                ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
             }
         });
         _tabID = getTabID();

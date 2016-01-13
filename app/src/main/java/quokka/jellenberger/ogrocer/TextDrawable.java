@@ -47,6 +47,7 @@ public class TextDrawable extends Drawable {
     public TextDrawable(Context context, int tabID) {
 
         this.paint = new Paint();
+
         paint.setColor(context.getResources().getColor(R.color.primaryColor));
         paint.setTextSize(context.getResources().getDimension(R.dimen.text_size_large));
         paint.setAntiAlias(true);
@@ -65,7 +66,8 @@ public class TextDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawColor(0xDEffffff);
+        canvas.drawColor(Color.TRANSPARENT);
+        //canvas.drawColor(0xDEffffff);
         if (paint.getTextAlign() == Paint.Align.LEFT)
             canvas.drawText(text, 32.0f , canvas.getHeight() / 2.0f + 18.0f, paint);
         else
