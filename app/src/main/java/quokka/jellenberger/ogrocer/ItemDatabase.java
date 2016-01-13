@@ -64,11 +64,11 @@ public class ItemDatabase {
 
     public List<String> getAllNames() {
         List<String> names = new ArrayList<>();
-        Cursor cursor = database.query(dbHelper.TABLE_NAME, new String[]{dbHelper.ITEM_NAME}, null, null, null, null, null);
+        Cursor cursor = database.query(dbHelper.TABLE_NAME, allColumns, null, null, null, null, null);
         cursor.moveToFirst();
         while (!cursor.isAfterLast()) {
-            ItemInfo item = cursorToItem(cursor);
-            names.add(item.getItemName());
+            String name = cursorToName(cursor);
+            names.add(name);
             cursor.moveToNext();
         }
         cursor.close();
@@ -81,5 +81,8 @@ public class ItemDatabase {
         info.setPrices(cursor.getString(2));
         info.setStores(cursor.getString(3));
         return info;
+    }
+    public String cursorToName(Cursor cursor) {
+        return cursor.getString(1);
     }
 }

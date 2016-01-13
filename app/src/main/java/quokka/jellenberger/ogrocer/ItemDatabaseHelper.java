@@ -9,13 +9,13 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ItemDatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME = "localItemDB";
+    public static final String TABLE_NAME = "localItems";
     public static final String ITEM_ID = "_id";
     public static final String ITEM_NAME ="name";
     public static final String ITEM_PRICES = "prices";
     public static final String ITEM_STORES = "stores";
 
-    private static final String DATABASE_NAME = "localUserQueue.db";
+    public static final String DATABASE_NAME = "localItemDB.db";
     private static final int DATABASE_VERSION = 1;
     private static final String TEXT_TYPE = " TEXT";
     private static final String INT_TYPE = " INTEGER";
@@ -36,11 +36,13 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         db.execSQL(DATABASE_CREATE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        db.execSQL("DROP TABLE IF EXISTS " + TABLE_NAME);
         onCreate(db);
     }
 }

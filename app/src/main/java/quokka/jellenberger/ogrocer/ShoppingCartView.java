@@ -64,6 +64,7 @@ public class ShoppingCartView extends AppCompatActivity
         setContentView(R.layout.shopping_cart_view_layout);
 
         //>> ITEM DATABASE
+        deleteDatabase(ItemDatabaseHelper.DATABASE_NAME);
         mItemDB = new ItemDatabase(this);
         try {
             mItemDB.open();
@@ -71,6 +72,8 @@ public class ShoppingCartView extends AppCompatActivity
             e.printStackTrace();
         }
         mItemDB.addItem(new ItemInfo((long)1,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
+        mItemDB.addItem(new ItemInfo((long)2,"Apple Sauce", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
+        mItemDB.addItem(new ItemInfo((long)3,"Oatmeal", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
         //<< ITEM DATABASE
 
         //>> APPBAR

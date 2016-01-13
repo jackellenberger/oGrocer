@@ -104,8 +104,11 @@ public class ShoppingCartTabContent extends Fragment
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
-        for(int x = 0; x < 10; x++){
-            SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_action_clock));
+        List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+        Log.d("known foods",String.valueOf(knownFoods.size()));
+        for(String f : knownFoods){
+            Log.d("we know about",f);
+            SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
         mSearchBox.setLogoText("Save for later");
@@ -140,7 +143,6 @@ public class ShoppingCartTabContent extends Fragment
             public void onSearch(String searchTerm) {
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
                 Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
-
             }
             @Override
             public void onResultClick(SearchResult result) {
