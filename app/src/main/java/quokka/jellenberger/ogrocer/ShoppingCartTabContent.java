@@ -394,7 +394,7 @@ public class ShoppingCartTabContent extends Fragment
 
     public static void toggleCartItemChecked(View v){
         CheckBox cb = (CheckBox) v;
-        View container = (View) v.getParent().getParent();
+        View container = (View) v.getParent();//.getParent();
         TextView tv = (TextView) container.findViewById(R.id.recycler_item_text);
         if (cb.isChecked()){
             container.setBackgroundColor(ContextCompat.getColor(v.getContext(),R.color.grey200));
