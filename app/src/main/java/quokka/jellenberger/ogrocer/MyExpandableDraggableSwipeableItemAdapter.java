@@ -17,7 +17,6 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.v4.view.ViewCompat;
 import android.util.Log;
@@ -405,9 +404,13 @@ class MyExpandableDraggableSwipeableItemAdapter
     @Override
     public int onGetGroupItemSwipeReactionType(MyGroupViewHolder holder, int groupPosition, int x, int y) {
         if (holder.tabID == 0)
-            return Swipeable.REACTION_CAN_SWIPE_RIGHT;
+            return Swipeable.REACTION_CAN_SWIPE_RIGHT |
+                    Swipeable.REACTION_CAN_NOT_SWIPE_LEFT_WITH_RUBBER_BAND_EFFECT |
+                    Swipeable.REACTION_MASK_START_SWIPE_LEFT;
         else
-            return Swipeable.REACTION_CAN_SWIPE_LEFT;
+            return Swipeable.REACTION_CAN_SWIPE_LEFT |
+                    Swipeable.REACTION_CAN_NOT_SWIPE_RIGHT_WITH_RUBBER_BAND_EFFECT |
+                    Swipeable.REACTION_MASK_START_SWIPE_RIGHT;
         /*
         if (onCheckGroupCanStartDrag(holder, groupPosition, x, y)) {
             return Swipeable.REACTION_CAN_NOT_SWIPE_BOTH_H;

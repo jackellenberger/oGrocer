@@ -2,7 +2,6 @@ package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -111,7 +110,7 @@ public class ShoppingCartTabContent extends Fragment
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
-        mSearchBox.setLogoText("Save for later");
+        mSearchBox.setLogoText("Add an item");
         //mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
 
         mSearchBox.setMenuListener(new SearchBox.MenuListener(){

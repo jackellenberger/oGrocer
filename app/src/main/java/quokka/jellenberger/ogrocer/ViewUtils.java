@@ -24,8 +24,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.MotionEvent;
 import android.view.View;
 
-import com.h6ah4i.android.widget.advrecyclerview.utils.RecyclerViewAdapterUtils;
-
 public class ViewUtils {
     public static boolean hitTest(View v, int x, int y) {
         if (v == null)
@@ -41,6 +39,7 @@ public class ViewUtils {
     }
 
     public static void setTwoPane(RecyclerView mRecyclerView, int tabPosition) {
+        if (true) return;
         final int tabPos[] = new int[1];
         tabPos[0] = tabPosition;
         mRecyclerView.setOnTouchListener(new View.OnTouchListener() {
