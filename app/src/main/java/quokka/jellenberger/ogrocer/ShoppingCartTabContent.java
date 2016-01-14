@@ -2,6 +2,7 @@ package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -104,13 +105,11 @@ public class ShoppingCartTabContent extends Fragment
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
         List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
-        Log.d("known foods",String.valueOf(knownFoods.size()));
         for(String f : knownFoods){
-            Log.d("we know about",f);
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
-        mSearchBox.setLogoText("Add an item");
+        mSearchBox.setLogoText("Add to cart");
         //mSearchBox.setDrawerLogo(R.drawable.ic_action_add);
 
         mSearchBox.setMenuListener(new SearchBox.MenuListener(){
@@ -140,8 +139,8 @@ public class ShoppingCartTabContent extends Fragment
             }
             @Override
             public void onSearch(String searchTerm) {
+                ShoppingCartTabContent.addItemToCart(searchTerm);
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
-                Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onResultClick(SearchResult result) {
@@ -173,7 +172,7 @@ public class ShoppingCartTabContent extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        _dataProvider = new ShoppingCartDataProvider(this);
+        _dataProvider = new ShoppingCartDataProvider(this,0);
         ShoppingCartView parent = (ShoppingCartView) getActivity();
         parent.registerDataProvider(0, _dataProvider);
 
@@ -207,7 +206,6 @@ public class ShoppingCartTabContent extends Fragment
             public void onGroupItemRemoved(int groupPosition) {
                 ((ShoppingCartView) getActivity()).onGroupItemSwipedOut(_tabID, groupPosition);
             }
-
             @Override
             public void onChildItemRemoved(int groupPosition, int childPosition) {}
 
@@ -262,7 +260,7 @@ public class ShoppingCartTabContent extends Fragment
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
 
         // allow child (recycler) to handle touch events, or give them up to slidingtablayout when applicable
-        ViewUtils.setTwoPane(mRecyclerView,_tabID);
+        //ViewUtils.setTwoPane(mRecyclerView,_tabID);
     }
 
     @Override
@@ -416,5 +414,14 @@ public class ShoppingCartTabContent extends Fragment
         ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
         savedDP.add(savedDP.getGroupCount(), item);
         ((SavedCartTabContent) savedDP.mOwnerFragment).mItemAdapter.notifyItemInserted(savedDP.getGroupCount());
+    }
+    public static void addItemToCart(String itemName){
+        ShoppingCartView scv = (ShoppingCartView) _activityContext;
+        ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv.mDataProviders[0];
+        final ShoppingCartDataProvider.ConcreteGroupData group = new ShoppingCartDataProvider.ConcreteGroupData(cartDP.getGroupCount(), itemName);
+        final List<AbstractExpandableDataProvider.ChildData> children = new ArrayList<>();
+        children.add(new ShoppingCartDataProvider.ConcreteChildData(cartDP.getGroupCount(), itemName));
+        cartDP.add(cartDP.getGroupCount(),new Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>>(group, children));
+        ((ShoppingCartTabContent) cartDP.mOwnerFragment).mItemAdapter.notifyItemInserted(cartDP.getGroupCount());
     }
 }

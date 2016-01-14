@@ -31,6 +31,7 @@ import com.h6ah4i.android.widget.advrecyclerview.utils.WrapperAdapterUtils;
 import com.quinny898.library.persistentsearch.SearchBox;
 import com.quinny898.library.persistentsearch.SearchResult;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -95,8 +96,9 @@ public class SavedCartTabContent extends Fragment
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
-        for(int x = 0; x < 10; x++){
-            SearchResult option = new SearchResult("Result " + Integer.toString(x), getResources().getDrawable(R.drawable.ic_action_clock));
+        List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+        for(String f : knownFoods){
+            SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
         }
         mSearchBox.setLogoText("Save for later");
@@ -129,8 +131,8 @@ public class SavedCartTabContent extends Fragment
             }
             @Override
             public void onSearch(String searchTerm) {
+                SavedCartTabContent.addItemToCart(searchTerm);
                 ((ArrayAdapter)((ListView)mSearchBox.findViewById(R.id.results)).getAdapter()).notifyDataSetChanged();
-                Toast.makeText(_activityContext, searchTerm +" Searched", Toast.LENGTH_LONG).show();
             }
             @Override
             public void onResultClick(SearchResult result) {
@@ -150,7 +152,7 @@ public class SavedCartTabContent extends Fragment
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        _dataProvider = new ShoppingCartDataProvider(this);
+        _dataProvider = new ShoppingCartDataProvider(this,1);
         ShoppingCartView parent = (ShoppingCartView) getActivity();
         parent.registerDataProvider(1, _dataProvider);
 
@@ -235,7 +237,7 @@ public class SavedCartTabContent extends Fragment
         mRecyclerViewExpandableItemManager.attachRecyclerView(mRecyclerView);
 
         // allow child (recycler) to handle touch events, or give them up to slidingtablayout when applicable
-        ViewUtils.setTwoPane(mRecyclerView, _tabID);
+        //ViewUtils.setTwoPane(mRecyclerView, _tabID);
     }
 
     @Override
@@ -373,6 +375,16 @@ public class SavedCartTabContent extends Fragment
         ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv.mDataProviders[0];
         cartDP.add(cartDP.getGroupCount(), item);
         ((ShoppingCartTabContent) cartDP.mOwnerFragment).mItemAdapter.notifyItemInserted(cartDP.getGroupCount());
+    }
+
+    public static void addItemToCart(String itemName){
+        ShoppingCartView scv = (ShoppingCartView) _activityContext;
+        ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
+        final ShoppingCartDataProvider.ConcreteGroupData group = new ShoppingCartDataProvider.ConcreteGroupData(savedDP.getGroupCount(), itemName);
+        final List<AbstractExpandableDataProvider.ChildData> children = new ArrayList<>();
+        children.add(new ShoppingCartDataProvider.ConcreteChildData(savedDP.getGroupCount(), itemName));
+        savedDP.add(savedDP.getGroupCount(),new Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>>(group, children));
+        ((SavedCartTabContent) savedDP.mOwnerFragment).mItemAdapter.notifyItemInserted(savedDP.getGroupCount());
     }
 
 }

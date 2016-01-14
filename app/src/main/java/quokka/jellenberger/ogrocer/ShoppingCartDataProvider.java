@@ -1,6 +1,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.util.Pair;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
@@ -25,21 +26,22 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     private long mLastRemovedChildParentGroupId = -1;
     private int mLastRemovedChildPosition = -1;
 
-    public ShoppingCartDataProvider(Fragment ownerFragment) {
-        final String groupItems[] = {"2% Milk","Dinner Rolls","Orange Juice","Potatoes"};
-        final String childItems[] = {"Image","Quantity","Best Price","Stores","Recipes"};
+    public ShoppingCartDataProvider(Fragment ownerFragment, int tabID) {
+        //final String groupItems[] = {"2% Milk","Dinner Rolls","Orange Juice","Potatoes"};
+        List<ItemInfo> groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mItemDB.getAllItems();
+        //final String childItems[] = {"Image","Quantity","Best Price","Stores","Recipes"};
         mOwnerFragment = ownerFragment;
         mData = new LinkedList<>();
+        //if (tabID == 0) {
+            for (ItemInfo item : groupItems) {
+                final String groupText = item.getItemName();
+                final ConcreteGroupData group = new ConcreteGroupData(item.getItemID(), groupText);
+                final List<ChildData> children = new ArrayList<>();
 
-        for (int i = 0; i < groupItems.length; i++) {
-            final long groupId = i;
-            final String groupText = groupItems[i];
-            final ConcreteGroupData group = new ConcreteGroupData(groupId, groupText);
-            final List<ChildData> children = new ArrayList<>();
-
-            children.add(new ConcreteChildData(groupId,groupItems[i]));
-            mData.add(new Pair<GroupData, List<ChildData>>(group, children));
-        }
+                children.add(new ConcreteChildData(item.getItemID(), item.getItemName()));
+                mData.add(new Pair<GroupData, List<ChildData>>(group, children));
+            }
+        //}
     }
 
     @Override
