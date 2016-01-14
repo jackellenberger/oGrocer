@@ -380,7 +380,7 @@ public class SavedCartTabContent extends Fragment
     public static void addItemToCart(String itemName){
         ShoppingCartView scv = (ShoppingCartView) _activityContext;
         ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
-        final ShoppingCartDataProvider.ConcreteGroupData group = new ShoppingCartDataProvider.ConcreteGroupData(savedDP.getGroupCount(), itemName);
+        final ShoppingCartDataProvider.ConcreteGroupData group = new ShoppingCartDataProvider.ConcreteGroupData(savedDP.getGroupCount()-1, itemName);
         final List<AbstractExpandableDataProvider.ChildData> children = new ArrayList<>();
         children.add(new ShoppingCartDataProvider.ConcreteChildData(savedDP.getGroupCount(), itemName));
         savedDP.add(savedDP.getGroupCount(),new Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>>(group, children));
