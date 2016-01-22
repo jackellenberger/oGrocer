@@ -18,7 +18,6 @@ import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandab
 
 import java.sql.SQLException;
 import java.util.Arrays;
-import java.util.List;
 
 /**
  * Created by jellenberger on 12/15/15.
@@ -92,7 +91,7 @@ public class ShoppingCartView extends AppCompatActivity
         mSlidingTabLayout.setCustomTabColorizer(new SlidingTabLayout.TabColorizer() {
             @Override
             public int getIndicatorColor(int position) {
-                return getResources().getColor(R.color.accentColor);
+                return getResources().getColor(R.color.primaryColorReallyLight);
             }
         });
         mSlidingTabLayout.setViewPager(mViewPager);
