@@ -67,7 +67,7 @@ public class TextDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        canvas.drawColor(mContext.getResources().getColor(R.color.grey100));
+        canvas.drawColor(Color.TRANSPARENT); //mContext.getResources().getColor(R.color.grey100));
         //canvas.drawColor(0xDEffffff);
         if (paint.getTextAlign() == Paint.Align.LEFT)
             canvas.drawText(text, 32.0f , canvas.getHeight() / 2.0f + 18.0f, paint);
