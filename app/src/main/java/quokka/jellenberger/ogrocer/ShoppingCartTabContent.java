@@ -2,7 +2,7 @@ package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Canvas;
+import android.content.res.ColorStateList;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.NinePatchDrawable;
@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.speech.RecognizerIntent;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -29,7 +30,6 @@ import android.widget.Toast;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
@@ -154,6 +154,18 @@ public class ShoppingCartTabContent extends Fragment
             }
         });
         _tabID = getTabID();
+
+        // >> FAB
+        FloatingActionButton myFab = (FloatingActionButton)  contentView.findViewById(R.id.shopping_cart_fab);
+        myFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.accentColor)));
+        myFab.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                Log.d("FAB","Pressed");
+                Toast.makeText(getContext(),"FAB Pressed",Toast.LENGTH_SHORT);
+            }
+        });
+        // << FAB
+
         return contentView;
     }
     //Something for the search/add box. not sure what it does...

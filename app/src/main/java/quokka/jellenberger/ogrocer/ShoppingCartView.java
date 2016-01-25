@@ -134,6 +134,10 @@ public class ShoppingCartView extends AppCompatActivity
         //<< NAVIGATION DRAWER
 
     }
+
+
+
+    // UTILITIES //
     public int getCurrentTab()
     {
         return mViewPager.getCurrentItem();
