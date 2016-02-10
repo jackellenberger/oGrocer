@@ -143,6 +143,14 @@ public class ShoppingCartView extends AppCompatActivity
         return mViewPager.getCurrentItem();
     }
 
+    public void openFragment(final Fragment fragment) {
+        Log.d("openFragment","opening Fragment");
+        android.support.v4.app.FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        //ft.setCustomAnimations(R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_top, R.anim.abc_slide_in_bottom, R.anim.abc_slide_out_bottom);
+        ft.replace(R.id.main_content, fragment).addToBackStack(null).commit();
+        //TODO: make proper fragment handling mechanic. pushing and popping off the FragMan is poor practice and doesn't support nesting
+    }
+
     public void onGroupItemSwipedOut(int tabID, int groupPosition) {
         String movedText = (tabID == 0) ? " saved for later" : " added to cart";
         Snackbar snackbar = Snackbar.make(

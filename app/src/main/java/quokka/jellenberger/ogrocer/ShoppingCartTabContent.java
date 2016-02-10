@@ -160,8 +160,9 @@ public class ShoppingCartTabContent extends Fragment
         myFab.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.accentColor)));
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                Log.d("FAB","Pressed");
-                Toast.makeText(getContext(),"FAB Pressed",Toast.LENGTH_SHORT);
+                Intent rsf = new Intent(getActivity(), RouteSelectorView.class);
+                rsf.putExtra("parameter1", "sup");
+                startActivity(rsf);
             }
         });
         // << FAB
