@@ -5,6 +5,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 /**
@@ -12,7 +14,8 @@ import android.widget.TextView;
  */
 
 public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder> {
-    private String[] mDataset;
+    private String[] mRouteTypes;
+    private int[] mRouteDrawables;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -27,8 +30,10 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RouteRecyclerAdapter(String[] myDataset) {
-        mDataset = myDataset;
+    public RouteRecyclerAdapter(String[] routeNames, int[] routeDrawables)
+    {
+        mRouteTypes = routeNames;
+        mRouteDrawables = routeDrawables;
     }
 
     // Create new views (invoked by the layout manager)
@@ -47,13 +52,14 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     public void onBindViewHolder(ViewHolder holder, int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
-        ((TextView) holder.mCardView.findViewById(R.id.card_text)).setText(mDataset[position]);
+        ((TextView) holder.mCardView.findViewById(R.id.map_frame_text)).setText(mRouteTypes[position]);
+        ((ImageView) holder.mCardView.findViewById(R.id.map_frame_image)).setImageResource(mRouteDrawables[position]);
 
     }
 
     // Return the size of your dataset (invoked by the layout manager)
     @Override
     public int getItemCount() {
-        return mDataset.length;
+        return mRouteTypes.length;
     }
 }

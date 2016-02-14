@@ -1,6 +1,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
@@ -51,8 +52,9 @@ public class RouteSelectorView extends AppCompatActivity {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         // specify an adapter (see also next example)
-        String[] RouteDescriptions = {"Cheapest","Closest"};
-        mAdapter = new RouteRecyclerAdapter(RouteDescriptions);
+        String[] RouteDescriptions = {"Cheapest","Closest","Highest Rated", "Custom"};
+        int[] RouteMaps = {R.drawable.multi_map, R.drawable.short_map, R.drawable.long_map, R.drawable.medium_map};
+        mAdapter = new RouteRecyclerAdapter(RouteDescriptions, RouteMaps);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
