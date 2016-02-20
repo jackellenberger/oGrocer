@@ -24,6 +24,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ShoppingCartView" />
         </activity>
+        <activity
+            android:name=".ItineraryView"
+            android:label="Itinerary"
+            android:parentActivityName=".RouteSelectorView" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".RouteSelectorView" />
+        </activity>
     </application>
 
 </manifest>

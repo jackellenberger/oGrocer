@@ -161,7 +161,9 @@ public class ShoppingCartTabContent extends Fragment
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent rsf = new Intent(getActivity(), RouteSelectorView.class);
-                rsf.putExtra("parameter1", "sup");
+                List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+                String[] ingredients = knownFoods.toArray(new String[knownFoods.size()]);
+                rsf.putExtra("ingredients", ingredients);
                 startActivity(rsf);
             }
         });

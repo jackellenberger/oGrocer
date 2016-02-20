@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <!-- APP BAR -->
+    <include
+        android:id="@+id/app_bar"
+        layout="@layout/shared_app_bar"
+        android:label="Routes" />
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/cart_recycler_item_picture_height"
+        android:id="@+id/map_frame"
+        android:layout_below="@id/app_bar"/>
+    <android.support.v7.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/map_frame"
+        android:id="@+id/directions_items_recycler"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/app_bar_height"
+        android:background="@color/primaryColor"
+        android:layout_alignParentBottom="true"
+        android:text="Update Prices"/>
+</RelativeLayout>

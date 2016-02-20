@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="@dimen/itinerary_recycler_item_height">
+
+    <FrameLayout
+        android:id="@+id/container"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:clickable="true"
+        android:orientation="horizontal">
+        <RelativeLayout
+            android:layout_width="fill_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:background="@drawable/bg_swipe_item_neutral">
+            <ImageView
+                android:id="@+id/direction_icon"
+                android:layout_width="wrap_content"
+                android:layout_height="fill_parent"
+                android:layout_gravity="start"
+                android:src="@drawable/ic_action_location"
+                android:padding="@dimen/spacing_micro"
+                />
+            <TextView
+                android:id="@+id/recycler_item_text"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="start"
+                android:layout_marginRight="@dimen/spacing_normal"
+                android:gravity="center_vertical"
+                android:textAppearance="@style/TextHeaderSub"
+                android:layout_toEndOf="@id/direction_icon"
+                />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+</FrameLayout>

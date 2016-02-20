@@ -1,7 +1,9 @@
 package quokka.jellenberger.ogrocer;
 
+import android.content.Intent;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdapter.ViewHolder> {
     private String[] mRouteTypes;
     private int[] mRouteDrawables;
+    private String[] mIngredients;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -30,18 +33,33 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public RouteRecyclerAdapter(String[] routeNames, int[] routeDrawables)
+    public RouteRecyclerAdapter(String[] routeNames, int[] routeDrawables, String[] ingredients)
     {
         mRouteTypes = routeNames;
         mRouteDrawables = routeDrawables;
+        mIngredients = ingredients;
     }
 
-    // Create new views (invoked by the layout manager)
+    @Override
+    public int getItemViewType(int position) {
+        return position;
+    }
+        // Create new views (invoked by the layout manager)
     @Override
     public RouteRecyclerAdapter.ViewHolder onCreateViewHolder(ViewGroup parent,
-                                                              int viewType) {
+                                                              final int viewType) {
         // create a new view
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.route_card_recycler_item, parent, false);
+        v.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent rsf = new Intent(v.getContext(), ItineraryView.class);
+                rsf.putExtra("ingredients", mIngredients);
+                rsf.putExtra("itineraryMap", mRouteDrawables[viewType]);
+                v.getContext().startActivity(rsf);
+                Log.d("OnClick","Route Card Recy Item");
+            }
+        });
         // set the view's size, margins, paddings and layout parameters
         ViewHolder vh = new ViewHolder(v);
         return vh;
@@ -54,7 +72,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
         // - replace the contents of the view with that element
         ((TextView) holder.mCardView.findViewById(R.id.map_frame_text)).setText(mRouteTypes[position]);
         ((ImageView) holder.mCardView.findViewById(R.id.map_frame_image)).setImageResource(mRouteDrawables[position]);
-
     }
 
     // Return the size of your dataset (invoked by the layout manager)

@@ -22,6 +22,7 @@
 
     <style name="RouteCardInfoButton">
         <item name="android:textSize">@dimen/app_text_size_xlarge</item>
+        <item name="android:textStyle">@integer/font_textStyle_medium</item>
         <item name="android:fontFamily">@string/font_fontFamily_medium</item>
         <item name="android:textColor">@color/grey500</item>
         <item name="android:textIsSelectable">true</item>
@@ -30,6 +31,7 @@
 
     <style name="RouteCardTitle">
         <item name="android:textSize">@dimen/app_text_size_headline</item>
+        <item name="android:textStyle">@integer/font_textStyle_medium</item>
         <item name="android:fontFamily">@string/font_fontFamily_medium</item>
         <item name="android:textColor">#ffffff</item>
         <item name="android:ellipsize">end</item>
@@ -40,6 +42,7 @@
     <!-- Body content -->
     <style name="TextHeader">
         <item name="android:textSize">@dimen/text_size_large</item>
+        <item name="android:textStyle">@integer/font_textStyle_medium</item>
         <item name="android:fontFamily">@string/font_fontFamily_medium</item>
         <item name="android:textColor">#87000000</item>
         <item name="android:ellipsize">end</item>

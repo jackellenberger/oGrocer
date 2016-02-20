@@ -27,13 +27,15 @@ public class RouteSelectorView extends AppCompatActivity {
     private RecyclerView.Adapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
 
+    String[] mIngredients;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Bundle extras = getIntent().getExtras();
         if(extras !=null)
         {
-            //pull out parameters
+            mIngredients = (String[]) extras.get("ingredients");
         }
         setContentView(R.layout.route_selector_frag_layout);
         _toolbar = (Toolbar) findViewById(R.id.app_bar);
@@ -54,7 +56,7 @@ public class RouteSelectorView extends AppCompatActivity {
         // specify an adapter (see also next example)
         String[] RouteDescriptions = {"Cheapest","Closest","Highest Rated", "Custom"};
         int[] RouteMaps = {R.drawable.multi_map, R.drawable.short_map, R.drawable.long_map, R.drawable.medium_map};
-        mAdapter = new RouteRecyclerAdapter(RouteDescriptions, RouteMaps);
+        mAdapter = new RouteRecyclerAdapter(RouteDescriptions, RouteMaps, mIngredients);
         mRecyclerView.setAdapter(mAdapter);
     }
     @Override
