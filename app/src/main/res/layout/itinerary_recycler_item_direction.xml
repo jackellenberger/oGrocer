@@ -14,22 +14,27 @@
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
+            android:id="@+id/direction_relative_layout"
             android:orientation="horizontal"
             android:background="@drawable/bg_swipe_item_neutral">
             <ImageView
                 android:id="@+id/direction_icon"
                 android:layout_width="wrap_content"
-                android:layout_height="fill_parent"
-                android:layout_gravity="start"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
                 android:src="@drawable/ic_action_location"
+                android:tint="@color/grey500"
                 android:padding="@dimen/spacing_micro"
+                android:scaleX="0.8"
+                android:scaleY="0.8"
                 />
             <TextView
                 android:id="@+id/recycler_item_text"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="start"
-                android:layout_marginRight="@dimen/spacing_normal"
+                android:layout_marginLeft="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextHeaderSub"
                 android:layout_toEndOf="@id/direction_icon"

@@ -22,7 +22,6 @@ import android.widget.Toast;
 import com.h6ah4i.android.widget.advrecyclerview.animator.GeneralItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.animator.SwipeDismissItemAnimator;
 import com.h6ah4i.android.widget.advrecyclerview.decoration.ItemShadowDecorator;
-import com.h6ah4i.android.widget.advrecyclerview.decoration.SimpleListDividerDecorator;
 import com.h6ah4i.android.widget.advrecyclerview.draggable.RecyclerViewDragDropManager;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 import com.h6ah4i.android.widget.advrecyclerview.swipeable.RecyclerViewSwipeManager;
@@ -96,7 +95,8 @@ public class SavedCartTabContent extends Fragment
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
-        List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+        List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
+        knownFoods.addAll(((ShoppingCartView) _activityContext).mSavedItemDB.getAllNames());
         for(String f : knownFoods){
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);

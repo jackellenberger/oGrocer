@@ -15,24 +15,22 @@
             android:layout_width="fill_parent"
             android:layout_height="match_parent"
             android:orientation="horizontal"
-            android:background="@drawable/bg_swipe_item_neutral">
+            android:background="@color/grey50">
             <ImageView
                 android:id="@+id/drag_handle"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:layout_gravity="start"
-                android:background="@color/grey300"
+                android:layout_gravity="center"
+                android:background="@drawable/circle"
                 android:src="@drawable/mini_drag_handle"
-                android:tint="@color/white"
-                android:padding="@dimen/spacing_micro"
-                android:layout_marginTop="@dimen/negative_spacing_normal"
-                android:paddingStart="@dimen/padding_normal"
+                android:tint="@color/grey500"
+                android:layout_marginStart="@dimen/padding_normal"
+                android:layout_marginEnd="@dimen/padding_normal"
                 />
             <CheckBox
-                android:id="@+id/cart_checkbox"
+                android:id="@+id/ingredient_checkbox"
                 android:layout_width="wrap_content"
                 android:layout_height="fill_parent"
-                android:layout_margin="@dimen/spacing_micro"
                 android:theme="@style/AppTheme.Light"
                 android:layout_toEndOf="@id/drag_handle"
                 />
@@ -44,7 +42,7 @@
                 android:layout_marginRight="@dimen/spacing_normal"
                 android:gravity="center_vertical"
                 android:textAppearance="@style/TextHeaderSub"
-                android:layout_toEndOf="@id/cart_checkbox"
+                android:layout_toEndOf="@id/ingredient_checkbox"
                 />
         </RelativeLayout>
 

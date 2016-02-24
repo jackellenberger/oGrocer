@@ -6,6 +6,8 @@ import android.util.Pair;
 
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 
+import java.security.acl.Group;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     // for undo group item
     private Pair<GroupData, List<ChildData>> mLastRemovedGroup;
     private int mLastRemovedGroupPosition = -1;
+    public int mTabID;
 
     // for undo child item
     private ChildData mLastRemovedChild;
@@ -27,9 +30,15 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     private int mLastRemovedChildPosition = -1;
 
     public ShoppingCartDataProvider(Fragment ownerFragment, int tabID) {
-        //final String groupItems[] = {"2% Milk","Dinner Rolls","Orange Juice","Potatoes"};
-        List<ItemInfo> groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mItemDB.getAllItems();
-        //final String childItems[] = {"Image","Quantity","Best Price","Stores","Recipes"};
+        List<ItemInfo> groupItems;
+        mTabID = tabID;
+        if (tabID == 0) {
+             groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mCartItemDB.getAllItems();
+        }
+        else
+        {
+            groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mSavedItemDB.getAllItems();
+        }
         mOwnerFragment = ownerFragment;
         mData = new LinkedList<>();
         //if (tabID == 0) {
@@ -201,6 +210,27 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     }
 
     public void add(int toGroupPosition, Pair<GroupData, List<ChildData>> item){
+
+        ItemInfo dbitem = new ItemInfo( ((ConcreteGroupData)item.first).mText );
+        if (mTabID == 0){
+            try {
+                ((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.open();
+            } catch (SQLException e) {
+                Log.d("ERROR","Y U NO OPEN");
+            }
+            ((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.addItem(dbitem);
+        }
+        else if (mTabID == 1){
+            try {
+                ((ShoppingCartView) mOwnerFragment.getActivity()).mSavedItemDB.open();
+            } catch (SQLException e) {
+                Log.d("ERROR","Y U NO OPEN");
+            }
+            ((ShoppingCartView) mOwnerFragment.getActivity()).mSavedItemDB.addItem(dbitem);
+        }
+        Log.d("data provider tab",String.valueOf(mTabID));
+        Log.d("does db exist",String.valueOf(((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.getAllItems()));
+
         mData.add(toGroupPosition, item);
     }
 

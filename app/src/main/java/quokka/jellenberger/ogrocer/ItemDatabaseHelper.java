@@ -9,7 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  */
 public class ItemDatabaseHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE_NAME = "localItems";
+    public String TABLE_NAME;
     public static final String ITEM_ID = "_id";
     public static final String ITEM_NAME ="name";
     public static final String ITEM_PRICES = "prices";
@@ -22,16 +22,18 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
     private static final String REAL_TYPE = " REAL";
     private static final String COMMA_SEP = ",";
 
-    private static final String DATABASE_CREATE =
-            "CREATE TABLE " + TABLE_NAME + " (" +
-                    ITEM_ID + " INTEGER PRIMARY KEY , " +
-                    ITEM_NAME + TEXT_TYPE + COMMA_SEP +
-                    ITEM_PRICES + TEXT_TYPE + COMMA_SEP +
-                    ITEM_STORES + TEXT_TYPE +
-                    " )";
+    private String DATABASE_CREATE;
 
-    public ItemDatabaseHelper(Context context) {
+    public ItemDatabaseHelper(Context context, String tableName) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        TABLE_NAME = tableName;
+        DATABASE_CREATE =
+                "CREATE TABLE " + TABLE_NAME + " (" +
+                        ITEM_ID + " INTEGER PRIMARY KEY , " +
+                        ITEM_NAME + TEXT_TYPE + COMMA_SEP +
+                        ITEM_PRICES + TEXT_TYPE + COMMA_SEP +
+                        ITEM_STORES + TEXT_TYPE +
+                        " )";
     }
 
     @Override

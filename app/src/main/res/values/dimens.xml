@@ -17,6 +17,11 @@
 <!-- Dimensions common among all features in the app. -->
 <resources>
 
+    <dimen name="cart_recycler_item_height">48dp</dimen>
+    <dimen name="cart_recycler_item_picture_height">192dp</dimen>
+
+    <dimen name="itinerary_recycler_item_height">42dp</dimen>
+    <dimen name="direction_image_width">54dp</dimen>
     <!-- standard metrics -->
     <dimen name="spacing_normal">8dp</dimen>
     <dimen name="spacing_micro">4dp</dimen>
@@ -238,11 +243,5 @@
     <dimen name="list_item2_height">96dp</dimen>
     <dimen name="list_group_item_height">96dp</dimen>
     <dimen name="list_group_item_with_add_remove_buttons_height">108dp</dimen>
-
-    <dimen name="cart_recycler_item_height">48dp</dimen>
-    <dimen name="cart_recycler_item_picture_height">192dp</dimen>
-
-    <dimen name="itinerary_recycler_item_height">36dp</dimen>
-
 
 </resources>

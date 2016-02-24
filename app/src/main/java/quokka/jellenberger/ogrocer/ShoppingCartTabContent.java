@@ -104,7 +104,8 @@ public class ShoppingCartTabContent extends Fragment
         mSearchBox = (SearchBox) contentView.findViewById(R.id.searchbox);
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
-        List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+        List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
+        knownFoods.addAll(((ShoppingCartView) _activityContext).mSavedItemDB.getAllNames());
         for(String f : knownFoods){
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
@@ -161,7 +162,10 @@ public class ShoppingCartTabContent extends Fragment
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent rsf = new Intent(getActivity(), RouteSelectorView.class);
-                List<String> knownFoods = ((ShoppingCartView) _activityContext).mItemDB.getAllNames();
+                List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
+                for (String s : knownFoods){
+                    Log.d("in db", s);
+                }
                 String[] ingredients = knownFoods.toArray(new String[knownFoods.size()]);
                 rsf.putExtra("ingredients", ingredients);
                 startActivity(rsf);

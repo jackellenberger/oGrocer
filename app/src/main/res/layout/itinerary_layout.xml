@@ -11,16 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="@dimen/cart_recycler_item_picture_height"
         android:id="@+id/map_frame"
-        android:layout_below="@id/app_bar"/>
+        android:layout_below="@id/app_bar"
+        android:adjustViewBounds="true"
+        android:scaleType="fitXY"
+        />
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/map_frame"
+        android:layout_above="@+id/price_update_button"
         android:id="@+id/directions_items_recycler"/>
     <Button
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:background="@color/primaryColor"
         android:layout_alignParentBottom="true"
+        android:id="@+id/price_update_button"
         android:text="Update Prices"/>
 </RelativeLayout>

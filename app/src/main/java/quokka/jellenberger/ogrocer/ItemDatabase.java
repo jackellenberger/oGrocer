@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,8 +22,9 @@ public class ItemDatabase {
             ItemDatabaseHelper.ITEM_PRICES,
             ItemDatabaseHelper.ITEM_STORES,
     };
-    public ItemDatabase(Context context) {
-        dbHelper = new ItemDatabaseHelper(context);
+    public ItemDatabase(Context context, String tableName) {
+        dbHelper = new ItemDatabaseHelper(context, tableName);
+        dbHelper.getWritableDatabase();
     }
 
     public void open() throws SQLException {
@@ -34,10 +36,12 @@ public class ItemDatabase {
     }
 
     public void addItem(ItemInfo item) {
+        dbHelper.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(dbHelper.ITEM_NAME, item.getItemName());
         values.put(dbHelper.ITEM_PRICES, item.s_getPrices());
         values.put(dbHelper.ITEM_STORES, item.s_getStores());
+        Log.d("adding into",dbHelper.TABLE_NAME);
         long insertId = database.insert(dbHelper.TABLE_NAME, null, values);
         Cursor cursor = database.query(dbHelper.TABLE_NAME, allColumns, dbHelper.ITEM_ID + " = " + insertId, null, null, null, null);
         cursor.close();
@@ -45,7 +49,7 @@ public class ItemDatabase {
 
     public void deleteItem(ItemInfo item) {
         long id = item.getItemID();
-        database.delete(ItemDatabaseHelper.TABLE_NAME, ItemDatabaseHelper.ITEM_ID + " = " + id, null);
+        database.delete(dbHelper.TABLE_NAME, ItemDatabaseHelper.ITEM_ID + " = " + id, null);
     }
 
     public List<ItemInfo> getAllItems() {

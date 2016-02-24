@@ -2,6 +2,7 @@ package quokka.jellenberger.ogrocer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -14,6 +15,18 @@ public class ItemInfo {
     private List<String> stores;
 
     public ItemInfo(){};
+    public ItemInfo(String name)
+    {
+        List<Double> p =  new ArrayList<Double>();
+        List<String> s =  new ArrayList<String>();
+        p.add(0.00);
+        s.add("location");
+        this.itemName = name;
+        this.itemID = -1;
+        this.prices =p;
+        this.stores =s;
+        //match rest on network db
+    };
     public ItemInfo(long id, String name, List<Double> prices, List<String> stores){
         this.itemID = id;
         this.itemName = name;

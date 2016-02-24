@@ -31,7 +31,8 @@ public class ShoppingCartView extends AppCompatActivity
 
 
     //Local item database
-    public ItemDatabase mItemDB;
+    public ItemDatabase mCartItemDB;
+    public ItemDatabase mSavedItemDB;
 
     //APP BAR
     private Toolbar _toolbar;
@@ -63,16 +64,31 @@ public class ShoppingCartView extends AppCompatActivity
         setContentView(R.layout.shopping_cart_view_layout);
 
         //>> ITEM DATABASE
+        Log.d("deleting",ItemDatabaseHelper.DATABASE_NAME);
         deleteDatabase(ItemDatabaseHelper.DATABASE_NAME);
-        mItemDB = new ItemDatabase(this);
+        mCartItemDB = new ItemDatabase(this, "cartDB");
         try {
-            mItemDB.open();
+            mCartItemDB.open();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        mItemDB.addItem(new ItemInfo((long)1,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
-        mItemDB.addItem(new ItemInfo((long)2,"Apple Sauce", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
-        mItemDB.addItem(new ItemInfo((long)3,"Oatmeal", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
+
+        mCartItemDB.addItem(new ItemInfo((long)1,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
+        mCartItemDB.addItem(new ItemInfo((long)2,"Apple Sauce", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
+        mCartItemDB.addItem(new ItemInfo((long)3,"Oatmeal", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
+
+        //Log.d("deleting",ItemDatabaseHelper.DATABASE_NAME);
+        //deleteDatabase(ItemDatabaseHelper.DATABASE_NAME);
+        mSavedItemDB = new ItemDatabase(this,"savedDB");
+        try {
+            mSavedItemDB.open();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        mSavedItemDB.addItem(new ItemInfo((long)1,"Kiwis", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
+        mSavedItemDB.addItem(new ItemInfo((long)2,"Ketchup", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
+        mSavedItemDB.addItem(new ItemInfo((long)3,"Watermelon", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
+
         //<< ITEM DATABASE
 
         //>> APPBAR
@@ -157,14 +173,7 @@ public class ShoppingCartView extends AppCompatActivity
                 findViewById(R.id.container),
                 this.mDataProviders[tabID].getGroupItem(groupPosition).getText() + movedText,
                 Snackbar.LENGTH_LONG);
-        /* undo is more work than its worth
-        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemUndoActionClicked();
-            }
-        });
-        */
+
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
         snackbar.show();
     }
@@ -173,14 +182,6 @@ public class ShoppingCartView extends AppCompatActivity
                 findViewById(R.id.container),
                 this.mDataProviders[tabID].getGroupItem(groupPosition).getText() + " deleted",
                 Snackbar.LENGTH_LONG);
-        /* undo is more work than its worth
-        snackbar.setAction(R.string.snack_bar_action_undo, new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemUndoActionClicked();
-            }
-        });
-        */
         snackbar.setActionTextColor(ContextCompat.getColor(this, R.color.snackbar_action_color_done));
         snackbar.show();
     }
@@ -198,16 +199,7 @@ public class ShoppingCartView extends AppCompatActivity
 
     public void onChildItemClicked(int groupPosition, int childPosition) {
         Log.d("Child Item Clicked", "I guess");
-        /*
-        final Fragment fragment = getSupportFragmentManager().findFragmentByTag(FRAGMENT_LIST_VIEW);
-        AbstractExpandableDataProvider.ChildData data = getDataProvider().getChildItem(groupPosition, childPosition);
 
-        if (data.isPinned()) {
-            // unpin if tapped the pinned item
-            data.setPinned(false);
-            ((ShoppingCartTabContent) fragment).notifyChildItemChanged(groupPosition, childPosition);
-        }
-        */
     }
 
     private void onItemUndoActionClicked() {

@@ -54,12 +54,13 @@ public class ItineraryView extends AppCompatActivity {
 
         List<ItineraryObject> ItineraryList = new ArrayList<ItineraryObject>();
         int index = 0;
-        ItineraryList.add(index++, new ItineraryObject("Destination","Alice's Grocery",R.drawable.ic_store, -1));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Left",R.drawable.ic_directions,1));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Right",R.drawable.ic_directions,2));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Destination on Right",R.drawable.ic_directions,3));
+        ItineraryList.add(index++, new ItineraryObject("Destination","Alice's Grocery",R.drawable.ic_action_location, -1));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Left on Woodlawn Dr",R.drawable.ic_action_arrow_left,1));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Right onto 55th St",R.drawable.ic_action_arrow_right,2));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Destination on Right",R.drawable.ic_store,3));
+        int ingredientCounter = 0;
         for (String ingredient : mIngredients){
-            ItineraryList.add(index++, new ItineraryObject("Ingredient",ingredient,R.drawable.ic_action_cart,-1));
+            ItineraryList.add(index++, new ItineraryObject("Ingredient",ingredient,false,ingredientCounter++));
         }
         mAdapter = new ItineraryRecyclerAdapter(ItineraryList.toArray(new ItineraryObject[ItineraryList.size()]));
         mRecyclerView.setAdapter(mAdapter);
