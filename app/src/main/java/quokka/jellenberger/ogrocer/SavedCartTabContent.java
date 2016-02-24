@@ -96,7 +96,6 @@ public class SavedCartTabContent extends Fragment
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
         List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
-        knownFoods.addAll(((ShoppingCartView) _activityContext).mSavedItemDB.getAllNames());
         for(String f : knownFoods){
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
@@ -372,6 +371,7 @@ public class SavedCartTabContent extends Fragment
         ShoppingCartView scv = (ShoppingCartView) _activityContext;
         ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
         final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = savedDP.removeGroupItem2(pos);
+        ((ShoppingCartView) _activityContext).mCartItemDB.changeTab( (item.first).getText(), 0);
         ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv.mDataProviders[0];
         cartDP.add(cartDP.getGroupCount(), item);
         ((ShoppingCartTabContent) cartDP.mOwnerFragment).mItemAdapter.notifyItemInserted(cartDP.getGroupCount());

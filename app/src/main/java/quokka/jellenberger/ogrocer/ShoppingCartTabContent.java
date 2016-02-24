@@ -105,7 +105,6 @@ public class ShoppingCartTabContent extends Fragment
         mSearchBox.enableVoiceRecognition(this);
         // move the following code to wherever we interface with the local foods db
         List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
-        knownFoods.addAll(((ShoppingCartView) _activityContext).mSavedItemDB.getAllNames());
         for(String f : knownFoods){
             SearchResult option = new SearchResult(f, getResources().getDrawable(R.drawable.ic_action_clock));
             mSearchBox.addSearchable(option);
@@ -162,7 +161,7 @@ public class ShoppingCartTabContent extends Fragment
         myFab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
                 Intent rsf = new Intent(getActivity(), RouteSelectorView.class);
-                List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames();
+                List<String> knownFoods = ((ShoppingCartView) _activityContext).mCartItemDB.getAllNames(_tabID);
                 for (String s : knownFoods){
                     Log.d("in db", s);
                 }
@@ -429,6 +428,7 @@ public class ShoppingCartTabContent extends Fragment
         ShoppingCartView scv = (ShoppingCartView) _activityContext;
         ShoppingCartDataProvider cartDP = (ShoppingCartDataProvider) scv.mDataProviders[0];
         final Pair<AbstractExpandableDataProvider.GroupData, List<AbstractExpandableDataProvider.ChildData>> item = cartDP.removeGroupItem2(pos);
+        ((ShoppingCartView) _activityContext).mCartItemDB.changeTab( (item.first).getText(), 1);
         ShoppingCartDataProvider savedDP = (ShoppingCartDataProvider) scv.mDataProviders[1];
         savedDP.add(savedDP.getGroupCount(), item);
         ((SavedCartTabContent) savedDP.mOwnerFragment).mItemAdapter.notifyItemInserted(savedDP.getGroupCount());

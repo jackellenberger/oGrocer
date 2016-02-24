@@ -2,7 +2,6 @@ package quokka.jellenberger.ogrocer;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -13,25 +12,27 @@ public class ItemInfo {
     private String itemName;
     private List<Double> prices;
     private List<String> stores;
+    private int inTab; // 1 if yes, 0 if saved, -1 if deleted
 
     public ItemInfo(){};
-    public ItemInfo(String name)
+    public ItemInfo(String name, int inTab)
     {
-        List<Double> p =  new ArrayList<Double>();
-        List<String> s =  new ArrayList<String>();
-        p.add(0.00);
-        s.add("location");
+        List<Double> p =  new ArrayList<Double>(); p.add(0.00);
+        List<String> s =  new ArrayList<String>(); s.add("location");
+
         this.itemName = name;
         this.itemID = -1;
         this.prices =p;
         this.stores =s;
+        this.inTab = inTab;
         //match rest on network db
     };
-    public ItemInfo(long id, String name, List<Double> prices, List<String> stores){
+    public ItemInfo(long id, String name, List<Double> prices, List<String> stores, int inTab){
         this.itemID = id;
         this.itemName = name;
         this.prices = prices;
         this.stores = stores;
+        this.inTab = inTab;
     }
 
     public void setItemID(long id){
@@ -80,6 +81,12 @@ public class ItemInfo {
         for (String s : this.stores)
             s_Prices += s + ", ";
         return s_Prices;
+    }
+    public int getInTab(){
+        return this.inTab;
+    }
+    public void setInTab(int inTab){
+        this.inTab = inTab;
     }
 
 }

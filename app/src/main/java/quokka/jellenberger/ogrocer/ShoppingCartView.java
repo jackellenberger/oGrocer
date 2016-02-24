@@ -32,7 +32,6 @@ public class ShoppingCartView extends AppCompatActivity
 
     //Local item database
     public ItemDatabase mCartItemDB;
-    public ItemDatabase mSavedItemDB;
 
     //APP BAR
     private Toolbar _toolbar;
@@ -64,7 +63,7 @@ public class ShoppingCartView extends AppCompatActivity
         setContentView(R.layout.shopping_cart_view_layout);
 
         //>> ITEM DATABASE
-        Log.d("deleting",ItemDatabaseHelper.DATABASE_NAME);
+        long itemCount = 1;
         deleteDatabase(ItemDatabaseHelper.DATABASE_NAME);
         mCartItemDB = new ItemDatabase(this, "cartDB");
         try {
@@ -72,22 +71,14 @@ public class ShoppingCartView extends AppCompatActivity
         } catch (SQLException e) {
             e.printStackTrace();
         }
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco"),0));
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Apple Sauce", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco"),0));
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Oatmeal", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco"),0));
 
-        mCartItemDB.addItem(new ItemInfo((long)1,"Bread", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
-        mCartItemDB.addItem(new ItemInfo((long)2,"Apple Sauce", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
-        mCartItemDB.addItem(new ItemInfo((long)3,"Oatmeal", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
 
-        //Log.d("deleting",ItemDatabaseHelper.DATABASE_NAME);
-        //deleteDatabase(ItemDatabaseHelper.DATABASE_NAME);
-        mSavedItemDB = new ItemDatabase(this,"savedDB");
-        try {
-            mSavedItemDB.open();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        mSavedItemDB.addItem(new ItemInfo((long)1,"Kiwis", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco") ));
-        mSavedItemDB.addItem(new ItemInfo((long)2,"Ketchup", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco") ));
-        mSavedItemDB.addItem(new ItemInfo((long)3,"Watermelon", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco") ));
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Kiwis", Arrays.asList(2.11d,3.00d,2.30d), Arrays.asList("Jewel","Target","Costco"),1));
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Ketchup", Arrays.asList(3.44d,4.80d,3.75d), Arrays.asList("Jewel","Target","Costco"),1));
+        mCartItemDB.addItem(new ItemInfo(itemCount++,"Watermelon", Arrays.asList(2.64d,3.89d,3.20d), Arrays.asList("Jewel","Target","Costco"),1));
 
         //<< ITEM DATABASE
 

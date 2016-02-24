@@ -32,13 +32,8 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     public ShoppingCartDataProvider(Fragment ownerFragment, int tabID) {
         List<ItemInfo> groupItems;
         mTabID = tabID;
-        if (tabID == 0) {
-             groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mCartItemDB.getAllItems();
-        }
-        else
-        {
-            groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mSavedItemDB.getAllItems();
-        }
+        groupItems = ((ShoppingCartView) ownerFragment.getActivity()).mCartItemDB.getAllItems(mTabID);
+
         mOwnerFragment = ownerFragment;
         mData = new LinkedList<>();
         //if (tabID == 0) {
@@ -210,27 +205,8 @@ public class ShoppingCartDataProvider extends AbstractExpandableDataProvider {
     }
 
     public void add(int toGroupPosition, Pair<GroupData, List<ChildData>> item){
-
-        ItemInfo dbitem = new ItemInfo( ((ConcreteGroupData)item.first).mText );
-        if (mTabID == 0){
-            try {
-                ((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.open();
-            } catch (SQLException e) {
-                Log.d("ERROR","Y U NO OPEN");
-            }
-            ((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.addItem(dbitem);
-        }
-        else if (mTabID == 1){
-            try {
-                ((ShoppingCartView) mOwnerFragment.getActivity()).mSavedItemDB.open();
-            } catch (SQLException e) {
-                Log.d("ERROR","Y U NO OPEN");
-            }
-            ((ShoppingCartView) mOwnerFragment.getActivity()).mSavedItemDB.addItem(dbitem);
-        }
-        Log.d("data provider tab",String.valueOf(mTabID));
-        Log.d("does db exist",String.valueOf(((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.getAllItems()));
-
+        ItemInfo dbItem = new ItemInfo( ((ConcreteGroupData)item.first).mText, mTabID );
+        //((ShoppingCartView) mOwnerFragment.getActivity()).mCartItemDB.addItem(dbItem);
         mData.add(toGroupPosition, item);
     }
 

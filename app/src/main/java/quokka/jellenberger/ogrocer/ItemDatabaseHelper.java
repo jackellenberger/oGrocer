@@ -14,6 +14,7 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
     public static final String ITEM_NAME ="name";
     public static final String ITEM_PRICES = "prices";
     public static final String ITEM_STORES = "stores";
+    public static final String ITEM_INTAB = "in_tab";
 
     public static final String DATABASE_NAME = "localItemDB.db";
     private static final int DATABASE_VERSION = 1;
@@ -32,7 +33,8 @@ public class ItemDatabaseHelper extends SQLiteOpenHelper {
                         ITEM_ID + " INTEGER PRIMARY KEY , " +
                         ITEM_NAME + TEXT_TYPE + COMMA_SEP +
                         ITEM_PRICES + TEXT_TYPE + COMMA_SEP +
-                        ITEM_STORES + TEXT_TYPE +
+                        ITEM_STORES + TEXT_TYPE + COMMA_SEP +
+                        ITEM_INTAB + INT_TYPE +
                         " )";
     }
 
