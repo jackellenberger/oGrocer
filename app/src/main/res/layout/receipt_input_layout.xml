@@ -14,7 +14,7 @@
         android:layout_gravity="top"/>
     <Button
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="@dimen/cart_recycler_item_height"
         android:id="@+id/finished_button"
         android:background="@color/primaryColor"
         android:text="Done"

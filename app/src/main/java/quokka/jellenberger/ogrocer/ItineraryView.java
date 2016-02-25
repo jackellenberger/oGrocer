@@ -79,7 +79,7 @@ public class ItineraryView extends AppCompatActivity {
             ItineraryList.add(index++, new ItineraryObject("Direction", "Continue on 55th St for 1 mi", R.drawable.ic_action_arrow_up, 1, "Bob's Deli"));
             ItineraryList.add(index++, new ItineraryObject("Direction", "Destination on Left", R.drawable.ic_store, 3, "Bob's Deli"));
             for (int i = ingredientCounter; i < mIngredients.length; i++) {
-                ItineraryList.add(index++, new ItineraryObject("Ingredient", mIngredients[i], false, ingredientCounter++, "Alice's Grocery"));
+                ItineraryList.add(index++, new ItineraryObject("Ingredient", mIngredients[i], false, ingredientCounter++, "Bob's Deli"));
             }
         }
 

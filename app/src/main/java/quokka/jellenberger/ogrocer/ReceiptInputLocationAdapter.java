@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -79,14 +80,20 @@ public class ReceiptInputLocationAdapter extends RecyclerView.Adapter<ReceiptInp
         ((TextView) holder.mView.findViewById(R.id.location_name)).setText(mLocationSet[position]);
         ((ImageView) holder.mView.findViewById(R.id.map_frame_image)).setImageResource(R.drawable.medium_map);
 
-        RecyclerView itemRecycler = (RecyclerView) holder.mView.findViewById(R.id.receipt_item_per_location_recylcer);
-        RecyclerView.LayoutManager lm = new LinearLayoutManager(holder.mView.getContext());
-        RecyclerView.Adapter itemAdapter = new ReceiptInputItemAdapter(mItemsByLocation.get(mLocationSet[position]));
-        itemRecycler.setLayoutManager(lm);
+        final RecyclerView itemRecycler = (RecyclerView) holder.mView.findViewById(R.id.receipt_item_per_location_recylcer);
+        VariableLinearLayoutManager vlm = new VariableLinearLayoutManager(holder.mView.getContext(),RecyclerView.VERTICAL,false);
+        final RecyclerView.Adapter itemAdapter = new ReceiptInputItemAdapter(mItemsByLocation.get(mLocationSet[position]));
+        itemRecycler.setLayoutManager(vlm);
         itemRecycler.setAdapter(itemAdapter);
-        ViewGroup.LayoutParams adjustedHeightParams = itemRecycler.getLayoutParams();
-        //adjustedHeightParams.height = R.dimen.cart_recycler_item_height;
-        itemRecycler.setLayoutParams(adjustedHeightParams);
+
+        View addMoreItemsToLocationButton = holder.mView.findViewById(R.id.add_item_to_location_holder);
+        addMoreItemsToLocationButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((ReceiptInputItemAdapter) itemAdapter).mItems.add(new ItineraryObject("New Item"));
+                itemAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     // Return the size of your dataset (invoked by the layout manager)
