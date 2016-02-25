@@ -1,37 +1,31 @@
 package quokka.jellenberger.ogrocer;
 
-import android.content.Intent;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by jacka on 2/24/2016.
  */
 public class ReceiptInputLocationAdapter extends RecyclerView.Adapter<ReceiptInputLocationAdapter.ViewHolder> {
 
-    List<ItineraryObject> mItineraryObjects;
     String[] mLocationSet;
     HashMap<String, List<ItineraryObject>> mItemsByLocation;
-
+    RecyclerView mItemRecycler;
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
     // you provide access to all the views for a data item in a view holder
     public static class ViewHolder extends RecyclerView.ViewHolder {
         // each data item is just a string in this case
         public View mView;
+        public RecyclerView mRecyclerView;
         public ViewHolder(View v) {
             super(v);
             mView = v;
@@ -39,21 +33,10 @@ public class ReceiptInputLocationAdapter extends RecyclerView.Adapter<ReceiptInp
     }
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public ReceiptInputLocationAdapter(List<ItineraryObject> itineraryObjects, Set<String> locations)
+    public ReceiptInputLocationAdapter(HashMap<String, List<ItineraryObject>> itemsByLocation)
     {
-        mItineraryObjects = itineraryObjects;
-        mLocationSet = locations.toArray(new String[locations.size()]);
-        mItemsByLocation = new HashMap<>();
-
-        for (ItineraryObject obj : mItineraryObjects){
-            String key = obj.store;
-            if (!mItemsByLocation.containsKey(key)) {
-                List<ItineraryObject> starterList = new ArrayList<>();
-                mItemsByLocation.put(key, starterList);
-            }
-            if (obj.type.equals("Ingredient"))
-                mItemsByLocation.get(key).add(obj);
-        }
+        mItemsByLocation = itemsByLocation;
+        mLocationSet = mItemsByLocation.keySet().toArray(new String[]{});
     }
 
     @Override
@@ -80,11 +63,12 @@ public class ReceiptInputLocationAdapter extends RecyclerView.Adapter<ReceiptInp
         ((TextView) holder.mView.findViewById(R.id.location_name)).setText(mLocationSet[position]);
         ((ImageView) holder.mView.findViewById(R.id.map_frame_image)).setImageResource(R.drawable.medium_map);
 
-        final RecyclerView itemRecycler = (RecyclerView) holder.mView.findViewById(R.id.receipt_item_per_location_recylcer);
+        mItemRecycler = (RecyclerView) holder.mView.findViewById(R.id.receipt_item_per_location_recylcer);
         VariableLinearLayoutManager vlm = new VariableLinearLayoutManager(holder.mView.getContext(),RecyclerView.VERTICAL,false);
         final RecyclerView.Adapter itemAdapter = new ReceiptInputItemAdapter(mItemsByLocation.get(mLocationSet[position]));
-        itemRecycler.setLayoutManager(vlm);
-        itemRecycler.setAdapter(itemAdapter);
+        mItemRecycler.setLayoutManager(vlm);
+        mItemRecycler.setAdapter(itemAdapter);
+        holder.mRecyclerView = mItemRecycler;
 
         View addMoreItemsToLocationButton = holder.mView.findViewById(R.id.add_item_to_location_holder);
         addMoreItemsToLocationButton.setOnClickListener(new View.OnClickListener() {
@@ -100,5 +84,11 @@ public class ReceiptInputLocationAdapter extends RecyclerView.Adapter<ReceiptInp
     @Override
     public int getItemCount() {
         return mLocationSet.length;
+    }
+
+    public void addEmptyLocation(){
+        List<ItineraryObject> emptyItems = new ArrayList<ItineraryObject>();
+        mItemsByLocation.put("Choose Location",emptyItems);
+        mLocationSet = mItemsByLocation.keySet().toArray(new String[]{});
     }
 }

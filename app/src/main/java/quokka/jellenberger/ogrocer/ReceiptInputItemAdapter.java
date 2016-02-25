@@ -26,6 +26,7 @@ import java.util.Set;
 public class ReceiptInputItemAdapter extends RecyclerView.Adapter<ReceiptInputItemAdapter.ViewHolder> {
 
     public List<ItineraryObject> mItems;
+    ReceiptInputItemAdapter mAdapter;
 
     // Provide a reference to the views for each data item
     // Complex data items may need more than one view per item, and
@@ -43,8 +44,7 @@ public class ReceiptInputItemAdapter extends RecyclerView.Adapter<ReceiptInputIt
     public ReceiptInputItemAdapter(List<ItineraryObject> items)
     {
         mItems = items;
-        for(ItineraryObject i : mItems)
-            Log.d("item",i.innerString);
+        mAdapter = this;
     }
 
     @Override
@@ -64,7 +64,7 @@ public class ReceiptInputItemAdapter extends RecyclerView.Adapter<ReceiptInputIt
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(ViewHolder holder, int position) {
+    public void onBindViewHolder(ViewHolder holder, final int position) {
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
         ((CheckBox) holder.mView.findViewById(R.id.item_checkbox)).setChecked(mItems.get(position).checked);
@@ -77,6 +77,13 @@ public class ReceiptInputItemAdapter extends RecyclerView.Adapter<ReceiptInputIt
             }
             @Override
             public void onNothingSelected(AdapterView<?> parent) {            }
+        });
+        holder.mView.findViewById(R.id.item_recycler_item_delete).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mAdapter.mItems.remove(position);
+                mAdapter.notifyDataSetChanged();
+            }
         });
     }
 

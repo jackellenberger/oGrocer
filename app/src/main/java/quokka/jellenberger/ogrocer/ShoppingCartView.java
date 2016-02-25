@@ -1,6 +1,9 @@
 package quokka.jellenberger.ogrocer;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -17,6 +20,7 @@ import android.view.View;
 import com.h6ah4i.android.widget.advrecyclerview.expandable.RecyclerViewExpandableItemManager;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 
 /**
@@ -87,6 +91,13 @@ public class ShoppingCartView extends AppCompatActivity
         setSupportActionBar(_toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayShowHomeEnabled(true);
+        _toolbar.findViewById(R.id.add_receipt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent rsf = new Intent(v.getContext(), ReceiptInputFragment.class);
+                v.getContext().startActivity(rsf);
+            }
+        });
         //<< APPBAR
 
         //>> TABS
@@ -139,6 +150,15 @@ public class ShoppingCartView extends AppCompatActivity
             }
         });
         //<< NAVIGATION DRAWER
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null && extras.containsKey("didContribute")) {
+            if ((boolean)extras.get("didContribute"))
+                Snackbar.make(findViewById(R.id.main_content),"Thank you for contributing! Your reputation has increased",Snackbar.LENGTH_LONG).show();
+            else
+                Snackbar.make(findViewById(R.id.main_content),"You have chosen not to contribute, so your Reputation has decreased",Snackbar.LENGTH_LONG).show();
+
+        }
 
     }
 

@@ -1,6 +1,7 @@
 package quokka.jellenberger.ogrocer;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -42,6 +43,13 @@ public class RouteSelectorView extends AppCompatActivity {
         setSupportActionBar(_toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        _toolbar.findViewById(R.id.add_receipt).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent rsf = new Intent(v.getContext(), ReceiptInputFragment.class);
+                v.getContext().startActivity(rsf);
+            }
+        });
 
         mRecyclerView = (RecyclerView) findViewById(R.id.routes_recycler);
 

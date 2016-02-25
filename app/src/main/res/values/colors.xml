@@ -14,6 +14,7 @@
 
     <color name="transparent_white">#aaffffff</color>
     <color name="transparent_grey700"> #60616161 </color>
+    <color name="transparent">#00ff0000</color>
 
 
     <color name="grey50"> #FAFAFA </color>

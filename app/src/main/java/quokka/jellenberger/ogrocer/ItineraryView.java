@@ -3,6 +3,7 @@ package quokka.jellenberger.ogrocer;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,8 +12,10 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -49,6 +52,7 @@ public class ItineraryView extends AppCompatActivity {
         setSupportActionBar(_toolbar);
         if (getSupportActionBar() != null)
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        _toolbar.findViewById(R.id.add_receipt).setVisibility(View.GONE);
 
         ((ImageView) findViewById(R.id.map_frame)).setImageResource(mItineraryMap);
 
