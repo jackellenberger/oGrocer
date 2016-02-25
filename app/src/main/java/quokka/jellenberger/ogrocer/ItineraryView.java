@@ -1,10 +1,15 @@
 package quokka.jellenberger.ogrocer;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
+import android.widget.Button;
 import android.widget.ImageView;
 
 import java.util.ArrayList;
@@ -18,6 +23,9 @@ public class ItineraryView extends AppCompatActivity {
     int mItineraryMap;
     //APP BAR
     private Toolbar _toolbar;
+    private ItineraryView _activityContect;
+
+    private Button _mUpdatePricesButton;
 
     //CARD RECYCLER
     private RecyclerView mRecyclerView;
@@ -34,6 +42,8 @@ public class ItineraryView extends AppCompatActivity {
             mItineraryMap = (int) extras.get("itineraryMap");
         }
         setContentView(R.layout.itinerary_layout);
+
+        _activityContect = (ItineraryView) this;
 
         _toolbar = (Toolbar) findViewById(R.id.app_bar);
         setSupportActionBar(_toolbar);
@@ -52,17 +62,38 @@ public class ItineraryView extends AppCompatActivity {
         mLayoutManager = new LinearLayoutManager(this);
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        List<ItineraryObject> ItineraryList = new ArrayList<ItineraryObject>();
+        final List<ItineraryObject> ItineraryList = new ArrayList<ItineraryObject>();
         int index = 0;
-        ItineraryList.add(index++, new ItineraryObject("Destination","Alice's Grocery",R.drawable.ic_action_location, -1));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Left on Woodlawn Dr",R.drawable.ic_action_arrow_left,1));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Right onto 55th St",R.drawable.ic_action_arrow_right,2));
-        ItineraryList.add(index++, new ItineraryObject("Direction","Destination on Right",R.drawable.ic_store,3));
+        ItineraryList.add(index++, new ItineraryObject("Destination","Alice's Grocery",R.drawable.ic_action_location, -1,"Alice's Grocery"));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Left on Woodlawn Dr",R.drawable.ic_action_arrow_left,1,"Alice's Grocery"));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Turn Right onto 55th St",R.drawable.ic_action_arrow_right,2,"Alice's Grocery"));
+        ItineraryList.add(index++, new ItineraryObject("Direction","Destination on Right",R.drawable.ic_store,3,"Alice's Grocery"));
         int ingredientCounter = 0;
         for (String ingredient : mIngredients){
-            ItineraryList.add(index++, new ItineraryObject("Ingredient",ingredient,false,ingredientCounter++));
+            if (ingredientCounter > 2)
+                break;
+            ItineraryList.add(index++, new ItineraryObject("Ingredient",ingredient,false,ingredientCounter++,"Alice's Grocery"));
         }
+        if (mIngredients.length > ingredientCounter) {
+            ItineraryList.add(index++, new ItineraryObject("Destination", "Bob's Deli", R.drawable.ic_action_location, -1, "Bob's Deli"));
+            ItineraryList.add(index++, new ItineraryObject("Direction", "Continue on 55th St for 1 mi", R.drawable.ic_action_arrow_up, 1, "Bob's Deli"));
+            ItineraryList.add(index++, new ItineraryObject("Direction", "Destination on Left", R.drawable.ic_store, 3, "Bob's Deli"));
+            for (int i = ingredientCounter; i < mIngredients.length; i++) {
+                ItineraryList.add(index++, new ItineraryObject("Ingredient", mIngredients[i], false, ingredientCounter++, "Alice's Grocery"));
+            }
+        }
+
         mAdapter = new ItineraryRecyclerAdapter(ItineraryList.toArray(new ItineraryObject[ItineraryList.size()]));
         mRecyclerView.setAdapter(mAdapter);
+
+        _mUpdatePricesButton = (Button) findViewById(R.id.price_update_button);
+        _mUpdatePricesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent rsf = new Intent(v.getContext(), ReceiptInputFragment.class);
+                rsf.putParcelableArrayListExtra("itineraryObjects", (ArrayList<? extends Parcelable>) ItineraryList);
+                v.getContext().startActivity(rsf);
+            }
+        });
     }
 }

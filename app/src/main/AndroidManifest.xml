@@ -33,6 +33,15 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".RouteSelectorView" />
         </activity>
+        <activity
+            android:name=".ReceiptInputFragment"
+            android:label="Receipt Input"
+            android:parentActivityName=".ItineraryView" >
+            <!-- Parent activity meta-data to support 4.0 and lower -->
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".ItineraryView" />
+        </activity>
     </application>
 
 </manifest>

@@ -57,7 +57,6 @@ public class RouteRecyclerAdapter extends RecyclerView.Adapter<RouteRecyclerAdap
                 rsf.putExtra("ingredients", mIngredients);
                 rsf.putExtra("itineraryMap", mRouteDrawables[viewType]);
                 v.getContext().startActivity(rsf);
-                Log.d("OnClick","Route Card Recy Item");
             }
         });
         // set the view's size, margins, paddings and layout parameters

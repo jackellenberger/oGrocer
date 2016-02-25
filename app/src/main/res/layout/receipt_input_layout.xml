@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/grey100">
+    <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/app_bar"
+        layout="@layout/shared_app_bar"
+        android:label="Routes"
+        android:layout_gravity="top"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/finished_button"
+        android:background="@color/primaryColor"
+        android:text="Done"
+        android:clickable="true"
+        android:layout_alignParentBottom="true">
+    </Button>
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/receipt_location_recylcer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="start"
+        android:layout_above="@id/finished_button"
+        android:layout_below="@id/app_bar"
+        />
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/receipt_add_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_action_add"
+        android:tint="@color/white"
+        app:elevation="4dp"
+        android:layout_alignEnd="@id/finished_button"
+        android:layout_margin="16dp"
+        android:layout_above="@id/finished_button"
+        />
+
+</RelativeLayout>

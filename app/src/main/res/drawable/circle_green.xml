@@ -5,7 +5,4 @@
     android:useLevel="false" >
     <solid android:color="@color/accentColorReallyLight" />
 
-    <stroke
-        android:width="10dp"
-        android:color="@color/accentColorReallyLight" />
 </shape>

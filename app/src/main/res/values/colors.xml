@@ -12,6 +12,10 @@
 
     <color name="white">#ffffffff</color>
 
+    <color name="transparent_white">#aaffffff</color>
+    <color name="transparent_grey700"> #60616161 </color>
+
+
     <color name="grey50"> #FAFAFA </color>
     <color name="grey100"> #F5F5F5 </color>
     <color name="grey200"> #EEEEEE </color>

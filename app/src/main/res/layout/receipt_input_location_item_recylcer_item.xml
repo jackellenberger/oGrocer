@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal"
+    android:layout_width="match_parent"
+    android:layout_height="@dimen/cart_recycler_item_height"
+    android:background="@color/white">
+    <CheckBox
+        android:id="@+id/item_checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="fill_parent"
+        android:layout_margin="@dimen/spacing_micro"
+        android:theme="@style/AppTheme.Light"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:id="@+id/ingredient_text"
+        android:text="Ingredient"
+        android:textAppearance="@style/TextHeaderSub"/>
+
+    <TextView
+        android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        android:textAppearance="@style/TextHeaderSub" android:text="$"/>
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:inputType="numberDecimal"
+        android:id="@+id/price_input"
+        android:hint="$"
+        android:backgroundTint="@color/primaryColor"
+        android:textAppearance="@style/TextHeaderSub"
+        android:layout_marginEnd="@dimen/padding_normal"/>
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end|center"
+        android:inputType="numberDecimal"
+        android:id="@+id/amount_input"
+        android:hint="count"
+        android:backgroundTint="@color/primaryColor"
+        android:textAppearance="@style/TextHeaderSub" />
+    <Spinner
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center|end"
+        android:id="@+id/amount_type_spinner"
+        android:prompt="@string/units_prompt"
+        android:entries="@array/units_array">
+    </Spinner>
+    <ImageView
+        android:id="@+id/item_recycler_item_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="28dp"
+        android:layout_gravity="center|end"
+        android:layout_margin="@dimen/spacing_micro"
+        android:alpha="0.28"
+        android:src="@drawable/ic_action_cancel" />
+</LinearLayout>

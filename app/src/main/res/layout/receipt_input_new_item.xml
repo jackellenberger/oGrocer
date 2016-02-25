@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!-- DO NOT USE? -->
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="@dimen/padding_normal">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/map_frame">
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/cart_recycler_item_picture_height"
+            android:id="@+id/map_frame_image"
+            android:src="@drawable/multi_map"
+            android:adjustViewBounds="true"
+            android:scaleType="fitXY"
+            android:background="@color/grey300"
+            android:backgroundTint="@color/transparent_grey700"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="@dimen/app_bar_height"
+            android:id="@+id/location_name"
+            android:textColor="@color/white"
+            android:textAppearance="@style/RouteCardTitle"
+            android:padding="@dimen/spacing_normal"
+            android:text="Choose a Location"
+            android:shadowColor="@color/grey700"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:height="2dp"/>
+        <RelativeLayout
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/add_receipt_holder"
+            android:layout_alignBottom="@id/map_frame_image"
+            android:layout_alignEnd="@id/map_frame_image"
+            android:background="@drawable/circle"
+            android:backgroundTint="@color/transparent_white"
+            android:layout_margin="@dimen/spacing_micro">
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_note_add"
+                android:tint="@color/accentColorLight"
+                android:shadowColor="@color/grey700"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginBottom="5dp"
+                android:layout_marginEnd="0dp"/>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_camera"
+                android:tint="@color/accentColor"
+                android:shadowColor="@color/grey700"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="4dp"
+                android:layout_marginTop="6dp"/>
+        </RelativeLayout>
+    </RelativeLayout>
+
+</LinearLayout>
