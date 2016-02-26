@@ -19,6 +19,7 @@
 
     <dimen name="cart_recycler_item_height">48dp</dimen>
     <dimen name="cart_recycler_item_picture_height">192dp</dimen>
+    <dimen name="half_cart_recycler_item_picture_height">96dp</dimen>
 
     <dimen name="itinerary_recycler_item_height">42dp</dimen>
     <dimen name="direction_image_width">54dp</dimen>
